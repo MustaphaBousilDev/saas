@@ -1,0 +1,219 @@
+version: '3'
+services:
+  reservations:
+    image: reservations
+    build:
+      context: .
+      args:
+        - APP=reservations
+      target: development
+    restart: always
+      
+    command: npm run start:dev reservations
+    env_file:
+      - ./apps/reservations/.env
+    ports:
+      - '5000:5000'
+    depends_on:
+      - rabbitmq
+    container_name: reservations
+  auth:
+    image: auth
+    build:
+      context: .
+      args:
+        - APP=auth
+      target: development
+    restart: always
+    command: npm run start:dev auth
+    env_file:
+      - ./apps/auth/.env
+    ports:
+      - '5001:5001'
+    depends_on:
+      - rabbitmq
+    container_name: auth
+  payments:
+    image: payments
+    build:
+      context: .
+      args:
+        - APP=payments
+      target: development
+    restart: always
+    command: npm run start:dev payments
+    env_file:
+      - ./apps/payments/.env
+    depends_on:
+      - rabbitmq
+    # ports:
+    #   - '5003:5003'
+    # volumes: 
+    #   - .:/usr/src/app
+    container_name: payments
+  notifications:
+    image: notifications
+    build:
+      context: .
+      args:
+        - APP=notifications
+      target: development
+    restart: always
+    command: npm run start:dev notifications
+    env_file:
+      - ./apps/notifications/.env
+    depends_on:
+      #- redis
+      - rabbitmq
+    container_name: notifications
+  redis:
+    image: "redis:7-alpine"
+    ports:
+      - 6379
+    depends_on:
+      - rabbitmq
+    container_name: redis
+  rabbitmq:
+    image: rabbitmq 
+    ports:
+      - 5672:5672
+    container_name: rabbitmq
+  gateway:
+    image: gateway
+    build:
+      context: .
+      args:
+        - APP=gateway
+      target: development
+    command: npm run start:dev gateway
+    env_file:
+      - ./apps/gateway/.env
+    #depends_on:
+     #- rabbitmq
+     #- reservations
+     #- auth
+     #- payments
+     #- notifications
+     #- organization
+    container_name: gateway
+    ports:
+      - 5007:5007
+    restart: "on-failure"
+  organization:
+    image: organization
+    build:
+      context: .
+      args:
+        - APP=organization
+      target: development
+    command: npm run start:dev organization
+    env_file:
+      - ./apps/organization/.env
+    ports:
+      - '5006:5006'
+    depends_on:
+      - rabbitmq
+    container_name: organization
+  s3:
+    image: s3
+    build: 
+      context: .
+      args:
+        - APP=s3
+      target: development
+    command: npm run start:dev s3 
+    env_file:
+      - ./apps/s3/.env 
+    ports:
+      - '5008:5008'
+    depends_on:
+      - rabbitmq
+    container_name: s3
+  tasks:
+    image: tasks 
+    build:
+      context: .
+      args:
+        - APP=tasks 
+      target: development
+    command: npm run start:dev tasks 
+    env_file:
+      - ./apps/tasks/.env
+    ports:
+      - '5009:5009'
+    depends_on:
+      - rabbitmq
+    container_name: tasks
+  employee:
+    image: employee
+    build:
+      context: .
+      args:
+        - APP=employee
+      target: development
+    command: npm run start:dev employee 
+    env_file:
+      - ./apps/employee/.env
+    ports:
+      - '5011:5011'
+    depends_on:
+      - rabbitmq
+    container_name: employee
+  stock:
+    image: stock
+    build:
+      context: .
+      args:
+        - APP=stock
+      target: development
+    command: npm run start:dev stock
+    env_file:
+      - ./apps/stock/.env
+    ports:
+      - '5012:5012'
+    depends_on:
+      - rabbitmq
+      - redis
+    container_name: stock
+  mongo:
+    image: mongo
+  db:
+    image: postgres
+    ports:
+      - '5433:5432' 
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: erp_authentifications
+      POSTGRES_INITDB_ARGS: '--data-checksums --encoding=UTF8'
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  pgadmin: 
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+     - "5050:80"
+  sonarqube:
+    image: sonarqube
+    ports:
+      - "9000:9000"  # Adjust the port as neededdd
+    container_name: sonarqube
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://db:5432/erp_authentifications
+      - SONARQUBE_JDBC_USERNAME=postgres
+      - SONARQUBE_JDBC_PASSWORD=postgres
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_temp:/opt/sonarqube/temp
+    depends_on:
+      - db  # Ensures that SonarQube starts after the database
+      - pgadmin
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_temp:

@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "forceConsistentCasingInFileNames": false,
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@app/shared": [
+        "libs/shared/src"
+      ],
+      "@app/shared/*": [
+        "libs/shared/src/*"
+      ],
+      "@app/domain": [
+        "apps/auth/src/domain"
+      ],
+      "@app/domain/*": [
+        "apps/auth/src/domain/*"
+      ],
+      "@app/infra":[
+        "apps/auth/src/infra"
+      ],
+      "@app/infra/*": [
+        "apps/auth/src/infra/*"
+      ],
+      "@app/useCases":[
+        "apps/auth/src/usecases"
+      ],
+      "@app/useCases/*": [
+        "apps/auth/src/usecases/*"
+      ],
+      "@app/auth-entity": [
+        "apps/auth/src/infra/entities"
+      ],
+      "@app/auth-entity/*": [
+        "apps/auth/src/infra/entities/*"
+      ],
+      "@app/Auth_USECASES": [
+        "apps/auth/src/useCases/*"
+      ],
+      "@app/Auth_INFRASTRUCTURE": [
+        "apps/auth/src/infrastructure/*"
+      ]
+    }
+  }
+}
