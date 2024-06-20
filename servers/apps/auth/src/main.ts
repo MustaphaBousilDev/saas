@@ -4,16 +4,20 @@ import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
-import { Transport } from '@nestjs/microservices';
+//import { Transport } from '@nestjs/microservices';
 import { AllExceptionFilter } from '@app/shared/filter';
 import { LoggerService } from './infra/logger/logger.service';
 import {
   LogginInterceptor,
   ResponseInterceptor,
 } from '@app/shared/interceptors';
+import { tenancyMiddleware } from '@app/shared/tenancy/tenancy.middleware';
+import { createDataSource } from '@app/shared/database/database.providers';
+import { getTenantConnection } from '@app/shared/tenancy/tenancy.utils';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
+  app.use(tenancyMiddleware);
   app.enableCors({
     origin: 'http://localhost:3000',
     methods: 'GET,POST,PUT,PATCH,HEAD,DELETE',
@@ -22,6 +26,28 @@ async function bootstrap() {
     credentials: true,
   });
   const configService = app.get(ConfigService);
+  const dataSource = createDataSource(configService);
+  if (!dataSource.isInitialized) {
+    console.log('data source is initialisez');
+    await dataSource.initialize();
+  }
+  await dataSource.runMigrations();
+  const schemas = await dataSource.manager.query(
+    'select schema_name as name from information_schema.schemata;',
+  );
+  for (let i = 0; i < schemas.length; i += 1) {
+    const { name: schema } = schemas[i];
+    if (schema.startsWith('tenant_')) {
+      console.log('schema');
+      console.log(schema);
+      //console.log('#fuck------------')
+      const tenantId = schema.replace('tenant_', '');
+      console.log('id:', tenantId);
+      const connection = await getTenantConnection(tenantId);
+      await connection.runMigrations();
+      //await connection.destroy();
+    }
+  }
   //transport protocol for communication microservices
   /*app.connectMicroservice({
     transport: Transport.RMQ,

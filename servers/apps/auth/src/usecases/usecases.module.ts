@@ -11,9 +11,45 @@ import { LoggerModule } from '@app/infra/logger';
 import { JwtModule } from '@app/infra/services/jwt';
 import { LocalStrategy } from '../strategies/local.strategy';
 import { JwtStrategy } from '../strategies/jwt.strategy';
+import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
+import { DatabaseModulemySQL } from '@app/shared';
+import {
+  AccountLockOut,
+  FailedLoginAttempts,
+  LoginAttempts,
+  PasswordHistory,
+  PasswordPolicy,
+  PasswordResetToken,
+  Permission,
+  Policies,
+  Resource,
+  Role,
+  Role_Has_Resource_Permission,
+  UserAuth,
+  UserDetailAuth,
+  VerificationEmailLogs,
+} from '@app/infra/entities';
 
 @Module({
   imports: [
+    DatabaseModulemySQL,
+    DatabaseModulemySQL.forFeature([
+      UserAuth,
+      AccountLockOut,
+      VerificationEmailLogs,
+      LoginAttempts,
+      PasswordHistory,
+      PasswordPolicy,
+      PasswordResetToken,
+      Permission,
+      Policies,
+      Role,
+      UserDetailAuth,
+      FailedLoginAttempts,
+      Resource,
+      Role_Has_Resource_Permission,
+    ]),
+    TenancyModule,
     JwtModule,
     RateLimiterModule,
     BcryptModule,

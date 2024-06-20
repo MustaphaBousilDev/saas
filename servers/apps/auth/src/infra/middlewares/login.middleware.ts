@@ -8,19 +8,10 @@ export class AuthMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     const token = req.cookies['Authentication'];
-    //console.log('|---------------------- token in middleware---------------|');
-    //console.log(token);
-    //console.log('|---------------------------------------------------------|');
     if (token) {
       try {
-        const decoded = await this.jwtTokenService.checkToken(token);
-        console.log('decode:', decoded);
-        const issuedAt = new Date(decoded.iat * 1000);
-        const expiresAt = new Date(decoded.exp * 1000);
-
-        console.log('Issued At:', issuedAt);
-        console.log('Expires At:', expiresAt);
-        // Token is valid, user is logged in
+        //const decoded = await this.jwtTokenService.checkToken(token);
+        await this.jwtTokenService.checkToken(token);
         return res.status(403).json({ message: 'User is already logged in' });
       } catch (err) {
         if (

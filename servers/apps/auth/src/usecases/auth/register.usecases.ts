@@ -2,7 +2,7 @@ import { IJwtServicePayload } from '@app/domain';
 import { UserAuth } from '../../infra/entities/user.entity';
 import { UserDetailAuth } from '@app/infra/entities';
 import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { LoggerService } from '@app/infra/logger/logger.service';
 import { JwtTokenService } from '@app/infra/services/jwt/jwt.service';
@@ -11,6 +11,7 @@ import { BcryptService } from '@app/infra/services/bcrypt/bcrypt.service';
 import { UserRepositorySQL } from '@app/infra/repositories/users.repository';
 import { UserDetailsRepositorySQL } from '@app/infra/repositories/users-details.repository';
 import { RegisterDTO } from '@app/infra/controllers/auth';
+import { CONNECTION } from '@app/shared/tenancy/tenancy.symbols';
 //import { CONNECTION } from '@app/shared/tenancy/tenancy.symbols';
 
 @Injectable()
@@ -25,6 +26,7 @@ export class RegisterUseCases {
     private readonly userRepository: UserRepositorySQL,
     private readonly userDetailsRepository: UserDetailsRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
+    @Inject(CONNECTION) dataSource: DataSource,
     //@Inject(CONNECTION) dataSource: DataSource,
   ) {
     console.log('i am in constructor of registerUseCase');
@@ -33,6 +35,8 @@ export class RegisterUseCases {
     //this.registersRepositoryAuth = dataSource.getRepository(UserDetailAuth);
     //this.printCurrentSchema(dataSource);
     console.log();
+    this.registersRepository = dataSource.getRepository(UserAuth);
+    this.registersRepositoryAuth = dataSource.getRepository(UserDetailAuth);
   }
   private async printCurrentSchema(dataSource: DataSource): Promise<void> {
     try {
@@ -94,14 +98,14 @@ export class RegisterUseCases {
       phone: UserDto.phone,
     });
     const userDetails =
-      await this.userDetailsRepository.create(createUserDetails);
+      await this.registersRepositoryAuth.save(createUserDetails);
     const user = new UserAuth({
       ...UserDto,
       password: hashedPassword,
       username: UserDto.firstName + UserDto.lastName,
       userDetails: userDetails,
     });
-    await this.userRepository.create(user);
+    await this.registersRepository.save(user);
     //await this.registersRepository.save(user);
     this.logger.log(
       'RegisterUseCase Success',

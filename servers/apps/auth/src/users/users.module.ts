@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { UserRepositorySQL } from './users.repository';
+//import { UserRepositorySQL } from './users.repository';
 import {
   DatabaseModulemySQL,
   EMPLOYEE_SERVICE,
   ORGANIZATION_SERVICE,
   RESERVATION_SERVICE,
-  Role,
   STOCK_SERVICE,
   TASKS_SERVICE,
   User,
@@ -16,6 +15,22 @@ import { LoggerModule } from 'nestjs-pino';
 import { UsersResolver } from './users.resolver';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
+import {
+  AccountLockOut,
+  FailedLoginAttempts,
+  LoginAttempts,
+  PasswordHistory,
+  PasswordPolicy,
+  PasswordResetToken,
+  Permission,
+  Policies,
+  Resource,
+  Role,
+  Role_Has_Resource_Permission,
+  UserAuth,
+  UserDetailAuth,
+  VerificationEmailLogs,
+} from '@app/infra/entities';
 
 @Module({
   imports: [
@@ -28,7 +43,22 @@ import { ConfigService } from '@nestjs/config';
     //   },
     // ]),
     DatabaseModulemySQL,
-    DatabaseModulemySQL.forFeature([User, Role]),
+    DatabaseModulemySQL.forFeature([
+      UserAuth,
+      AccountLockOut,
+      VerificationEmailLogs,
+      LoginAttempts,
+      PasswordHistory,
+      PasswordPolicy,
+      PasswordResetToken,
+      Permission,
+      Policies,
+      Role,
+      UserDetailAuth,
+      FailedLoginAttempts,
+      Resource,
+      Role_Has_Resource_Permission,
+    ]),
     LoggerModule,
     /*ClientsModule.registerAsync([
       {
@@ -88,8 +118,8 @@ import { ConfigService } from '@nestjs/config';
       },
     ]),*/
   ],
-  controllers: [UsersController],
-  providers: [UsersService, UserRepositorySQL, UsersResolver],
-  exports: [UsersService],
+  controllers: [],
+  providers: [],
+  exports: [],
 })
 export class UsersModule {}

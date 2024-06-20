@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from './users/users.module';
-import { LoggerModule } from '@app/shared';
+import { DatabaseModulemySQL, LoggerModule } from '@app/shared';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
@@ -12,9 +12,16 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriverConfig, ApolloFederationDriver } from '@nestjs/apollo';
 import { ControllerModule } from './infra/controllers';
 import { UseCasesModule } from './usecases/usecases.module';
+import { TenantsModule } from '@app/shared/tenancy/tenant/tenant.module';
+import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
+import { AuthMiddleware } from './infra/middlewares/login.middleware';
+import { JwtTokenService } from './infra/services/jwt/jwt.service';
 @Module({
   //JwtModule.registerAsync for configuration JWT
   imports: [
+    DatabaseModulemySQL,
+    TenantsModule,
+    TenancyModule,
     ControllerModule,
     UsersModule,
     UseCasesModule,
@@ -46,6 +53,12 @@ import { UseCasesModule } from './usecases/usecases.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, JwtTokenService],
 })
-export class AuthModule {}
+export class AuthModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: 'api/v1/auth/login', method: RequestMethod.POST });
+  }
+}
