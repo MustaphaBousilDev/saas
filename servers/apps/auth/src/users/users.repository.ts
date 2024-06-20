@@ -1,7 +1,7 @@
+import { UserAuth } from '@app/infra/entities';
 import {
   // AbstractRepository,
   AbstractRepositorymySQL,
-  User,
   // UserDocument,
 } from '@app/shared';
 import { Injectable, Logger } from '@nestjs/common';
@@ -9,6 +9,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // import { Model } from 'mongoose';
 import { EntityManager, Repository } from 'typeorm';
+import { User } from '@app/shared';
 
 // @Injectable()
 // export class UsersRepository extends AbstractRepository<UserDocument> {

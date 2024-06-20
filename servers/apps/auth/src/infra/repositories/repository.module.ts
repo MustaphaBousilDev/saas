@@ -14,6 +14,7 @@ import { ResourceRepositorySQL } from './resource.repository';
 import { Resource } from '../entities/resources.entity';
 import { Role_Has_Resource_Permission } from '../entities/role_has_resource_permission';
 import { RoleResourcePermissionRepositorySQL } from './role-resource-permission.respository';
+import { AccountLockOut, FailedLoginAttempts, LoginAttempts, PasswordHistory, PasswordPolicy, PasswordResetToken, Policies } from '../entities';
 
 @Module({
   imports: [
@@ -26,9 +27,16 @@ import { RoleResourcePermissionRepositorySQL } from './role-resource-permission.
       Role,
       Permission,
       UserAuth,
+      FailedLoginAttempts,
+      PasswordHistory,
+      PasswordResetToken,
       UserDetailAuth,
+      LoginAttempts,
+      Policies,
       Resource,
+      PasswordPolicy,
       Role_Has_Resource_Permission,
+      AccountLockOut,
     ]),
   ],
   providers: [

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ExecutionContext } from '@nestjs/common';
 import * as request from 'supertest';
 import { AuthModule } from './../src/auth.module';
-import { LoginUseCases } from '../src/usecases/login.usecases';
+import { LoginUseCases } from '../src/usecases/auth/login.usecases';
 import { IsAuthenticatedUseCases } from '../src/usecases/isAuthenticated.usecases';
 import { UseCaseProxy } from '../src/infra/usecases-proxy/usecases-proxy';
 import { UsecasesProxyModule } from '../src/infra/usecases-proxy/usecases-proxy.module';

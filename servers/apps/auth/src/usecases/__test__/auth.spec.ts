@@ -1,8 +1,8 @@
 import { IsAuthenticatedUseCases } from '../isAuthenticated.usecases';
 import { UserRepository } from '../../domain/repositories/userRepository.interface';
 import { UserM } from '../../domain/model/user';
-import { LoginUseCases } from '../login.usecases';
-import { LogoutUseCases } from '../logout.usecases';
+import { LoginUseCases } from '../auth/login.usecases';
+import { LogoutUseCases } from '../auth/logout.usecases';
 import { ILogger } from '../../domain/logger/logger.interface';
 import { IException } from '../../domain/exception/exception.interface';
 import { IJwtService } from '../../domain/adapter/jwt.interface';

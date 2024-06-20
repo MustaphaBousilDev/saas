@@ -7,13 +7,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { UserAuth } from '../entities/user.entity';
-import { UserDOMAIN, UserAuthRepository } from '@app/domain';
+import { UserDOMAIN } from '@app/domain';
 
 @Injectable()
-export class UserRepositorySQL
-  extends AbstractRepositorymySQL<UserAuth>
-  //implements UserAuthRepository
-{
+export class UserRepositorySQL extends AbstractRepositorymySQL<UserAuth> {
   protected readonly logger = new Logger(UserRepositorySQL.name);
 
   constructor(

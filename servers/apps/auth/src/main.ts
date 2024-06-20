@@ -7,7 +7,10 @@ import { ConfigService } from '@nestjs/config';
 import { Transport } from '@nestjs/microservices';
 import { AllExceptionFilter } from '@app/shared/filter';
 import { LoggerService } from './infra/logger/logger.service';
-import { LogginInterceptor, ResponseInterceptor } from '@app/shared/interceptors';
+import {
+  LogginInterceptor,
+  ResponseInterceptor,
+} from '@app/shared/interceptors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
@@ -37,7 +40,7 @@ async function bootstrap() {
   //Pipe
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   //Interceptor
-  app.useGlobalInterceptors(new LogginInterceptor(new LoggerService()))
+  app.useGlobalInterceptors(new LogginInterceptor(new LoggerService()));
   app.useGlobalInterceptors(new ResponseInterceptor());
   // Use the Logger provided by the Nest application
   app.useLogger(app.get(Logger));

@@ -3,7 +3,7 @@ import { UserAuth } from '../../entities/user.entity';
 import { Inject, UseGuards } from '@nestjs/common';
 //import { UsecasesProxyModule } from '../../usecases-proxy/usecases-proxy.module';
 //import { UseCaseProxy } from '../../usecases-proxy/usecases-proxy';
-import { LoginUseCases } from 'apps/auth/src/usecases/login.usecases';
+import { LoginUseCases } from '@app/useCases/auth/login.usecases';
 import { IsAuthenticatedUseCases } from 'apps/auth/src/usecases/isAuthenticated.usecases';
 import { LoginGuard } from '../../shared/guards/login.guard';
 import { RegisterDTO } from './dto/auth.dto';

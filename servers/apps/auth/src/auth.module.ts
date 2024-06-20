@@ -10,11 +10,14 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriverConfig, ApolloFederationDriver } from '@nestjs/apollo';
-
+import { ControllerModule } from './infra/controllers';
+import { UseCasesModule } from './usecases/usecases.module';
 @Module({
   //JwtModule.registerAsync for configuration JWT
   imports: [
+    ControllerModule,
     UsersModule,
+    UseCasesModule,
     LoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
