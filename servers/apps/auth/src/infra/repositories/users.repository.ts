@@ -1,13 +1,10 @@
-import {
-  // AbstractRepository,
-  AbstractRepositorymySQL,
-  // UserDocument,
-} from '@app/shared';
-import { Injectable, Logger } from '@nestjs/common';
+import { AbstractRepositorymySQL } from '@app/shared';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { UserAuth } from '../entities/user.entity';
 import { UserDOMAIN } from '@app/domain';
+import { CONNECTION } from '@app/shared/tenancy/tenancy.symbols';
 
 @Injectable()
 export class UserRepositorySQL extends AbstractRepositorymySQL<UserAuth> {
@@ -17,32 +14,11 @@ export class UserRepositorySQL extends AbstractRepositorymySQL<UserAuth> {
     @InjectRepository(UserAuth)
     userRepository: Repository<UserAuth>,
     entityManager: EntityManager,
+    @Inject(CONNECTION) private readonly dataSource: DataSource,
   ) {
-    super(userRepository, entityManager);
+    //super(userRepository, entityManager);
+    super(dataSource.getRepository(UserAuth), dataSource.createEntityManager());
   }
-
-  /*async getUserByEmail(email: string): Promise<UserDOMAIN> {
-    const userEntity = await this.entityRepository.findOne({
-      where: {
-        email: email,
-      },
-    });
-    if (!userEntity) {
-      return null;
-    }
-    return this.toUser(userEntity);
-  }
-  async getUserByUsername(username: string): Promise<UserDOMAIN> {
-    const userEntity = await this.entityRepository.findOne({
-      where: {
-        username: username,
-      },
-    });
-    if (!userEntity) {
-      return null;
-    }
-    return this.toUser(userEntity);
-  }*/
   async updateLastLogin() {}
   async verifyStatusEmail() {}
 

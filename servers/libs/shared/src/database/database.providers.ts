@@ -15,7 +15,7 @@ export const createDataSource = (configService: ConfigService): DataSource => {
     //entities: [/* your entities here */],
     //migrations: [/* your migrations here */],
     //namingStrategy: new SnakeNamingStrategy(),
-    synchronize: true, // Ensure this is false in production
+    synchronize: false, // Ensure this is false in production
     //logging: true,
     //entities: [join(__dirname, './modules/public/**/*.entity{.ts,.js}')],
     //migrations: [join(__dirname, './migrations/public/*{.ts,.js}')],

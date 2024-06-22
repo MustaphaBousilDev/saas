@@ -16,7 +16,9 @@ export class LoginUseCases {
     private readonly userRepository: UserRepositorySQL,
     private readonly bcryptService: BcryptService,
     private readonly rateLimiter: RateLimiterService,
-  ) {}
+  ) {
+    console.log('in construct login')
+  }
 
   async rateLimiting(ip: string) {
     const allowed = await this.rateLimiter.consume(ip);
@@ -60,7 +62,7 @@ export class LoginUseCases {
     //console.log('##find');
     //console.log(user);
     if (!user) {
-      return null;
+      return 'This Email is Not exists';
     }
     const match = await this.bcryptService.compare(pass, user.password);
     //console.log('hash: ', match);
@@ -71,7 +73,7 @@ export class LoginUseCases {
       console.log(password);
       return result;
     }
-    return null;
+    return 'Email or Password Incorrect';
   }
 
   async validateUserForJWTStragtegy(userId: number) {

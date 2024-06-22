@@ -14,14 +14,7 @@ export const getTypeOrmModuleOptions = (
     username: config.get__POSTGRE_USER(),
     password: config.get__PASSWORD_USER(),
     database: config.get__DB_PG(),
-    //entities: [__dirname + './../../**/*.entity{.ts,.js}'],
     synchronize: true,
-    //schema: process.env.DATABASE_SCHEMA,
-    //migrationsRun: true,
-    //migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-    /*cli: {
-      migrationsDir: 'src/migrations',
-    },*/
   } as TypeOrmModuleOptions,
 );
 

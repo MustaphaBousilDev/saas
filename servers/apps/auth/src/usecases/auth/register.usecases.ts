@@ -2,8 +2,8 @@ import { IJwtServicePayload } from '@app/domain';
 import { UserAuth } from '../../infra/entities/user.entity';
 import { UserDetailAuth } from '@app/infra/entities';
 import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.service';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 import { LoggerService } from '@app/infra/logger/logger.service';
 import { JwtTokenService } from '@app/infra/services/jwt/jwt.service';
 import { EnvironmentConfigService } from '@app/infra/config/env/environment-config.service';
@@ -11,13 +11,11 @@ import { BcryptService } from '@app/infra/services/bcrypt/bcrypt.service';
 import { UserRepositorySQL } from '@app/infra/repositories/users.repository';
 import { UserDetailsRepositorySQL } from '@app/infra/repositories/users-details.repository';
 import { RegisterDTO } from '@app/infra/controllers/auth';
-import { CONNECTION } from '@app/shared/tenancy/tenancy.symbols';
-//import { CONNECTION } from '@app/shared/tenancy/tenancy.symbols';
 
 @Injectable()
 export class RegisterUseCases {
-  private readonly registersRepository: Repository<UserAuth>;
-  private readonly registersRepositoryAuth: Repository<UserDetailAuth>;
+  //private readonly registersRepository: Repository<UserAuth>;
+  //private readonly registersRepositoryAuth: Repository<UserDetailAuth>;
   constructor(
     private readonly logger: LoggerService,
     private readonly bcryptService: BcryptService,
@@ -26,7 +24,6 @@ export class RegisterUseCases {
     private readonly userRepository: UserRepositorySQL,
     private readonly userDetailsRepository: UserDetailsRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
-    @Inject(CONNECTION) dataSource: DataSource,
     //@Inject(CONNECTION) dataSource: DataSource,
   ) {
     console.log('i am in constructor of registerUseCase');
@@ -35,8 +32,8 @@ export class RegisterUseCases {
     //this.registersRepositoryAuth = dataSource.getRepository(UserDetailAuth);
     //this.printCurrentSchema(dataSource);
     console.log();
-    this.registersRepository = dataSource.getRepository(UserAuth);
-    this.registersRepositoryAuth = dataSource.getRepository(UserDetailAuth);
+    //this.registersRepository = dataSource.getRepository(UserAuth);
+    //this.registersRepositoryAuth = dataSource.getRepository(UserDetailAuth);
   }
   private async printCurrentSchema(dataSource: DataSource): Promise<void> {
     try {
@@ -98,14 +95,14 @@ export class RegisterUseCases {
       phone: UserDto.phone,
     });
     const userDetails =
-      await this.registersRepositoryAuth.save(createUserDetails);
+      await this.userDetailsRepository.create(createUserDetails);
     const user = new UserAuth({
       ...UserDto,
       password: hashedPassword,
       username: UserDto.firstName + UserDto.lastName,
       userDetails: userDetails,
     });
-    await this.registersRepository.save(user);
+    await this.userRepository.create(user);
     //await this.registersRepository.save(user);
     this.logger.log(
       'RegisterUseCase Success',

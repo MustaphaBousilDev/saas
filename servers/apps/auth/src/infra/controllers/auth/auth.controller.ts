@@ -28,6 +28,7 @@ export class AuthController {
     @Request() request: any,
     @Res({ passthrough: true }) response: Response,
   ) {
+    console.log('fuck 2 i a m hzre');
     const ip = request.ip;
     await this.loginUseCase.rateLimiting(ip);
     const accessTokenCookie = await this.loginUseCase.getCookieWithJwtToken(

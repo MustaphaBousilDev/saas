@@ -7,10 +7,12 @@ import { LoginUseCases } from '@app/useCases/auth/login.usecases';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly usersService: LoginUseCases) {
+    console.log('tyyy');
     super({ usernameField: 'email' });
   }
 
   async validate(email: string, password: string) {
+    console.log('tototoggggggggggggggggggg');
     // console.log('##---- verify user', email, password);
     try {
       return await this.usersService.validateUserForLocalStragtegy(
@@ -18,6 +20,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
         password,
       );
     } catch (err) {
+      console.log('tototoggggggggggggggggggg-err');
       throw new UnauthorizedException(err);
     }
   }

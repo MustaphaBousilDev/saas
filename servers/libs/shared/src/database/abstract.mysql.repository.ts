@@ -13,8 +13,8 @@ export abstract class AbstractRepositorymySQL<T extends AbstractEntity<T>> {
   protected abstract readonly logger: Logger;
 
   constructor(
-    private readonly entityRepository: Repository<T>,
-    private readonly entityManager: EntityManager,
+    protected readonly entityRepository: Repository<T>,
+    protected readonly entityManager: EntityManager,
   ) {}
 
   public ORM = 'typeORM';
