@@ -1,17 +1,17 @@
 import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+//import { LocalAuthGuard } from './guards/local-auth.guard';
 import { CurrentUser } from '@app/shared';
 import { Response } from 'express';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtAuthGuard } from './guards/jwtAuth.guard';
 import { UserInfoDto } from '@app/shared/dto/userInfo.dto';
 
-@Controller('auth')
-export class AuthController {
+@Controller('autho')
+export class AuthControllers {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
+  //@UseGuards(LocalAuthGuard)
   @Post('login')
   async login(
     @CurrentUser() user: UserInfoDto,

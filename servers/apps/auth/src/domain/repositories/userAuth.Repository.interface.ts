@@ -3,7 +3,7 @@ import {
   FindOptionsRelations,
   FindOptionsWhere,
 } from 'typeorm';
-import { UserAuth } from '../../infra/entities/user.entity';
+import { UserAuth } from '../../infra/persistences/entities/user.entity';
 import { UserDOMAIN } from '../model/user';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 

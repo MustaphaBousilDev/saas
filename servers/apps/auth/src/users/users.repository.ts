@@ -1,4 +1,4 @@
-import { UserAuth } from '@app/infra/entities';
+import { UserAuth } from '@app/auth-entity';
 import {
   // AbstractRepository,
   AbstractRepositorymySQL,

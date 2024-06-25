@@ -6,7 +6,7 @@ import { LoginUseCases } from '../src/usecases/auth/login.usecases';
 import { IsAuthenticatedUseCases } from '../src/usecases/isAuthenticated.usecases';
 import { UseCaseProxy } from '../src/infra/usecases-proxy/usecases-proxy';
 import { UsecasesProxyModule } from '../src/infra/usecases-proxy/usecases-proxy.module';
-import { JwtAuthGuard } from '../src/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../src/guards/jwtAuth.guard';
 import JwtRefreshGuard from '../src/infra/shared/guards/jwtRefresh.guard';
 import cookieParser from 'cookie-parser';
 

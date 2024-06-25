@@ -4,8 +4,9 @@ import { JwtTokenService } from '@app/infra/services/jwt/jwt.service';
 import { EnvironmentConfigService } from '@app/infra/config/env/environment-config.service';
 import { BcryptService } from '@app/infra/services/bcrypt/bcrypt.service';
 import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.service';
-import { Injectable } from '@nestjs/common';
-import { UserRepositorySQL } from '@app/infra/repositories/users.repository';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { UserRepositorySQL } from '@app/infra/persistences';
+import { LoginDTO } from './dtos';
 
 @Injectable()
 export class LoginUseCases {
@@ -17,7 +18,7 @@ export class LoginUseCases {
     private readonly bcryptService: BcryptService,
     private readonly rateLimiter: RateLimiterService,
   ) {
-    console.log('in construct login')
+    console.log('in construct login');
   }
 
   async rateLimiting(ip: string) {
@@ -36,7 +37,11 @@ export class LoginUseCases {
     const payload: IJwtServicePayload = { userId: userId };
     const secret = this.jwtConfig.getJwtSecret();
     const expiresIn = this.jwtConfig.getJwtExpirationTime() + 's';
-    const token = this.jwtTokenService.createToken(payload, secret, expiresIn);
+    const token = await this.jwtTokenService.createToken(
+      payload,
+      secret,
+      expiresIn,
+    );
     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.jwtConfig.getJwtExpirationTime()}`;
   }
 
@@ -48,7 +53,11 @@ export class LoginUseCases {
     const payload: IJwtServicePayload = { userId: userId };
     const secret = this.jwtConfig.getJwtRefreshSecret();
     const expiresIn = this.jwtConfig.getJwtRefreshExpirationTime() + 's';
-    const token = this.jwtTokenService.createToken(payload, secret, expiresIn);
+    const token = await this.jwtTokenService.createToken(
+      payload,
+      secret,
+      expiresIn,
+    );
     await this.setCurrentRefreshTokenDB(token, userId);
     const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.jwtConfig.getJwtRefreshExpirationTime()}`;
     return {
@@ -57,23 +66,30 @@ export class LoginUseCases {
     };
   }
 
-  async validateUserForLocalStragtegy(email: string, pass: string) {
-    const user = await this.userRepository.findOne({ email });
+  async validateUserForLocalStragtegy(loginDto: LoginDTO) {
+    console.log('service', loginDto.email);
+    const user = await this.userRepository.findOne({ email: loginDto.email });
+    console.log(user);
     //console.log('##find');
     //console.log(user);
     if (!user) {
-      return 'This Email is Not exists';
+      throw new UnauthorizedException('Invalid credentials');
     }
-    const match = await this.bcryptService.compare(pass, user.password);
-    //console.log('hash: ', match);
+    const match = await this.bcryptService.compare(
+      loginDto.password,
+      user.password,
+    );
+    console.log('hash: ', match);
     if (user && match) {
-      //console.log('success');
+      console.log('success');
       //await this.updateLoginTime(user._id);
       const { password, ...result } = user;
       console.log(password);
+      console.log('result', result);
       return result;
     }
-    return 'Email or Password Incorrect';
+    //return 'Email or Password Incorrect';
+    return false;
   }
 
   async validateUserForJWTStragtegy(userId: number) {
@@ -120,6 +136,7 @@ export class LoginUseCases {
 
   async getUser(id: number) {
     const user = await this.userRepository.findOne({ _id: id });
+    console.log('getUser', user);
     if (!user) {
       return null;
     }

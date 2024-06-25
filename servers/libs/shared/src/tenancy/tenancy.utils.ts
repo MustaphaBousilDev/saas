@@ -17,7 +17,7 @@ import {
   UserAuth,
   UserDetailAuth,
   VerificationEmailLogs,
-} from '@app/infra/entities';
+} from '@app/auth-entity';
 
 const connectionManager: Map<string, DataSource> = new Map();
 
@@ -41,27 +41,30 @@ export async function getTenantConnection(
       return existingDataSource;
     }
   }
+  const isTenantSchema = connectionName.startsWith('tenant_');
 
   const tenantConfig: PostgresConnectionOptions = {
     ...(ormCongf as unknown as PostgresConnectionOptions),
     name: connectionName,
     schema: connectionName,
-    entities: [
-      UserAuth,
-      AccountLockOut,
-      VerificationEmailLogs,
-      LoginAttempts,
-      PasswordHistory,
-      PasswordPolicy,
-      PasswordResetToken,
-      Permission,
-      Policies,
-      Role,
-      UserDetailAuth,
-      FailedLoginAttempts,
-      Resource,
-      Role_Has_Resource_Permission,
-    ],
+    entities: isTenantSchema
+      ? [
+          UserAuth,
+          AccountLockOut,
+          VerificationEmailLogs,
+          LoginAttempts,
+          PasswordHistory,
+          PasswordPolicy,
+          PasswordResetToken,
+          Permission,
+          Policies,
+          Role,
+          UserDetailAuth,
+          FailedLoginAttempts,
+          Resource,
+          Role_Has_Resource_Permission,
+        ]
+      : [],
   };
 
   const newDataSource = new DataSource(tenantConfig);

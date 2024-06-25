@@ -6,12 +6,17 @@ import { LogoutUseCases } from './auth/logout.usecases';
 import { RateLimiterModule } from '@app/infra/services/rate/rate-limiter.module';
 import { BcryptModule } from '@app/infra/services/bcrypt';
 import { EnvironmentConfigModule } from '@app/infra/config';
-import { RepositoryModule } from '@app/infra/repositories/repository.module';
+import { RepositoryModule } from '@app/infra/persistences';
 import { LoggerModule } from '@app/infra/logger';
 import { JwtModule } from '@app/infra/services/jwt';
-import { LocalStrategy } from '../strategies/local.strategy';
-import { JwtStrategy } from '../strategies/jwt.strategy';
 import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
+import {
+  RoleAllUseCases,
+  RoleCreateUseCases,
+  RoleDeleteUseCases,
+  RoleGetUseCases,
+  RoleUpdateUseCases,
+} from './role';
 
 @Module({
   imports: [
@@ -26,13 +31,29 @@ import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
       isGlobal: true,
     }),
   ],
-  exports: [LoginUseCases, RegisterUseCases, LogoutUseCases],
-  providers: [
+  exports: [
+    //auth
     LoginUseCases,
     RegisterUseCases,
     LogoutUseCases,
-    LocalStrategy,
-    JwtStrategy,
+    //role
+    RoleAllUseCases,
+    RoleCreateUseCases,
+    RoleDeleteUseCases,
+    RoleGetUseCases,
+    RoleUpdateUseCases,
+  ],
+  providers: [
+    //auth
+    LoginUseCases,
+    RegisterUseCases,
+    LogoutUseCases,
+    //role
+    RoleAllUseCases,
+    RoleCreateUseCases,
+    RoleDeleteUseCases,
+    RoleGetUseCases,
+    RoleUpdateUseCases,
   ],
 })
 export class UseCasesModule {}

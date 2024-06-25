@@ -28,7 +28,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const dataSource = createDataSource(configService);
   if (!dataSource.isInitialized) {
-    console.log('data source is initialisez');
     await dataSource.initialize();
   }
   await dataSource.runMigrations();
@@ -38,9 +37,6 @@ async function bootstrap() {
   for (let i = 0; i < schemas.length; i += 1) {
     const { name: schema } = schemas[i];
     if (schema.startsWith('tenant_')) {
-      console.log('schema');
-      console.log(schema);
-      //console.log('#fuck------------')
       const tenantId = schema.replace('tenant_', '');
       console.log('id:', tenantId);
       const connection = await getTenantConnection(tenantId);

@@ -1,6 +1,6 @@
 import { IJwtServicePayload } from '@app/domain';
-import { UserAuth } from '../../infra/entities/user.entity';
-import { UserDetailAuth } from '@app/infra/entities';
+import { UserAuth } from '../../infra/persistences/entities/user.entity';
+import { UserDetailAuth } from '@app/auth-entity';
 import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
@@ -8,14 +8,12 @@ import { LoggerService } from '@app/infra/logger/logger.service';
 import { JwtTokenService } from '@app/infra/services/jwt/jwt.service';
 import { EnvironmentConfigService } from '@app/infra/config/env/environment-config.service';
 import { BcryptService } from '@app/infra/services/bcrypt/bcrypt.service';
-import { UserRepositorySQL } from '@app/infra/repositories/users.repository';
-import { UserDetailsRepositorySQL } from '@app/infra/repositories/users-details.repository';
-import { RegisterDTO } from '@app/infra/controllers/auth';
+import { UserRepositorySQL } from '@app/infra/persistences';
+import { UserDetailsRepositorySQL } from '@app/infra/persistences';
+import { RegisterDTO } from './dtos';
 
 @Injectable()
 export class RegisterUseCases {
-  //private readonly registersRepository: Repository<UserAuth>;
-  //private readonly registersRepositoryAuth: Repository<UserDetailAuth>;
   constructor(
     private readonly logger: LoggerService,
     private readonly bcryptService: BcryptService,
@@ -24,25 +22,12 @@ export class RegisterUseCases {
     private readonly userRepository: UserRepositorySQL,
     private readonly userDetailsRepository: UserDetailsRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
-    //@Inject(CONNECTION) dataSource: DataSource,
-  ) {
-    console.log('i am in constructor of registerUseCase');
-    //onsole.log(dataSource);
-    //his.registersRepository = dataSource.getRepository(UserAuth);
-    //this.registersRepositoryAuth = dataSource.getRepository(UserDetailAuth);
-    //this.printCurrentSchema(dataSource);
-    console.log();
-    //this.registersRepository = dataSource.getRepository(UserAuth);
-    //this.registersRepositoryAuth = dataSource.getRepository(UserDetailAuth);
-  }
+  ) {}
   private async printCurrentSchema(dataSource: DataSource): Promise<void> {
     try {
       const result = await dataSource.query(`
           SELECT current_schema(), current_setting('search_path');`);
-      const currentSchema = result[0].current_schema;
-      const searchPath = result[0].current_setting;
-      console.log(`Current schema: ${currentSchema}`);
-      console.log(`Search path: ${searchPath}`);
+      console.log(result);
     } catch (error) {
       console.error('Error fetching current schema information:', error);
     }
@@ -53,7 +38,6 @@ export class RegisterUseCases {
       //console.log('this route is rate limited Register (Success)');
       return 'This route is rate limeted ';
     } else {
-      //console.log('');
       throw new BadRequestException('rate limited exceeded Register (Failed)');
     }
   }
@@ -76,7 +60,11 @@ export class RegisterUseCases {
     const payload: IJwtServicePayload = { userId: userId };
     const secret = this.jwtConfig.getJwtRefreshSecret();
     const expiresIn = this.jwtConfig.getJwtRefreshExpirationTime() + 's';
-    const token = this.jwtTokenService.createToken(payload, secret, expiresIn);
+    const token = await this.jwtTokenService.createToken(
+      payload,
+      secret,
+      expiresIn,
+    );
     await this.setCurrentRefreshTokenDB(token, userId);
     const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.jwtConfig.getJwtRefreshExpirationTime()}`;
     return {

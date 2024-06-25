@@ -6,45 +6,51 @@ import { RegisterUseCases } from '@app/useCases/auth/register.usecases';
 import {
   Body,
   Controller,
+  Get,
   Post,
   Request,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { RegisterDTO } from './dto';
-import { LocalAuthGuard } from 'apps/auth/src/guards/local-auth.guard';
-@Controller('api/v1/auth')
+import { LocalAuthGuard } from '../../../guards/localAuth.guard';
+import { JwtAuthGuard } from 'apps/auth/src/guards/jwtAuth.guard';
+import { LoginResponseDTO, RegisterDTO } from '@app/useCases/auth/dtos';
+@Controller('api/v1/iam/auth')
 export class AuthController {
   constructor(
     private readonly loginUseCase: LoginUseCases,
     private readonly registerUseCase: RegisterUseCases,
     private readonly logoutUseCase: LogoutUseCases,
   ) {}
+
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   async login(
     @CurrentUser() user: UserInfoDto,
     @Request() request: any,
     @Res({ passthrough: true }) response: Response,
-  ) {
-    console.log('fuck 2 i a m hzre');
+  ): Promise<LoginResponseDTO> {
     const ip = request.ip;
     await this.loginUseCase.rateLimiting(ip);
     const accessTokenCookie = await this.loginUseCase.getCookieWithJwtToken(
-      user._id,
+      user?._id,
     );
     const refreshTokenCookie =
-      await this.loginUseCase.getCookieWithJwtRefreshToken(user._id);
+      await this.loginUseCase.getCookieWithJwtRefreshToken(user?._id);
     response.setHeader('Set-Cookie', [
       accessTokenCookie,
       refreshTokenCookie.cookie,
     ]);
     await this.loginUseCase.setCurrentRefreshTokenDB(
       refreshTokenCookie.token,
-      user._id,
+      user?._id,
     );
-    return 'Login successful';
+    return {
+      id: user._id,
+      username: user.email,
+      email: user.email,
+    };
   }
 
   @Post('/register')
@@ -72,7 +78,6 @@ export class AuthController {
     return 'Register succesful';
   }
   @Post('/logout')
-  //@UseGuards(JwtAuthGuard)
   async logout(
     @Request() request: any,
     @Res({ passthrough: true }) res: Response,
@@ -80,5 +85,13 @@ export class AuthController {
     const cookie = await this.logoutUseCase.execute();
     res.setHeader('Set-Cookie', cookie);
     return 'Logout Successful';
+  }
+
+  @Get('/me')
+  @UseGuards(JwtAuthGuard)
+  async getUser(@CurrentUser() user: any) {
+    console.log('controller', user);
+    return this.loginUseCase.validateUserForJWTStragtegy(user.userId);
+    //return user;
   }
 }

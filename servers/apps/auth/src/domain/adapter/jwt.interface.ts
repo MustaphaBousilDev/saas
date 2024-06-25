@@ -8,5 +8,5 @@ export interface IJwtService {
     payload: IJwtServicePayload,
     secret: string,
     expiresIn: string,
-  ): string;
+  ): Promise<string>;
 }

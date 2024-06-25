@@ -2,17 +2,18 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthController } from './auth';
 import { UseCasesModule } from '@app/useCases/usecases.module';
-import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '../services/jwt';
+import { RoleController } from './role/role.controller';
 
 @Module({
   imports: [
-    PassportModule,
     UseCasesModule,
+    JwtModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, RoleController],
   providers: [],
   exports: [],
 })

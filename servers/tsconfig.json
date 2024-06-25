@@ -43,10 +43,10 @@
         "apps/auth/src/usecases/*"
       ],
       "@app/auth-entity": [
-        "apps/auth/src/infra/entities"
+        "apps/auth/src/infra/persistences/entities"
       ],
       "@app/auth-entity/*": [
-        "apps/auth/src/infra/entities/*"
+        "apps/auth/src/infra/persistences/entities/*"
       ],
       "@app/Auth_USECASES": [
         "apps/auth/src/useCases/*"
