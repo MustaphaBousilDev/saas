@@ -6,9 +6,12 @@ import {
   RoleCreateOutputDTO,
   RoleCreateUseCases,
   RoleDeleteUseCases,
+  RoleFilterDTO,
+  RoleFindOutputDTO,
   RoleGetUseCases,
   RoleUpdateUseCases,
 } from '@app/useCases/role';
+import { RoleGetAllOutputDTO } from '@app/useCases/role';
 import {
   Body,
   Controller,
@@ -18,7 +21,9 @@ import {
   Post,
   Put,
   Request,
+  Query,
   UseGuards,
+  Param,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'apps/auth/src/guards/jwtAuth.guard';
 @Controller('api/v1/iam/role')
@@ -32,27 +37,39 @@ export class RoleController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('')
+  @Post()
   async createRole(
     @Request() request: any,
     @Body() roleDTO: RoleCreateInputDTO,
     @CurrentUser() user: UserInfoDto,
   ): Promise<RoleCreateOutputDTO> {
-    console.log('role controller', roleDTO);
     const ip = request.ip;
     await this.roleCreate.rateLimiting(ip);
-    console.log('ignore rate limiting');
     await this.roleCreate.checkRoleByName(roleDTO.name);
     const roleResponse = await this.roleCreate.createRole(roleDTO, user._id);
 
     return new RoleCreateOutputDTO(roleResponse);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/:role')
-  async getRole() {}
+  async getRole(@Param('role') role: string, @Request() request: any) {
+    const ip = request.ip;
+    await this.roleGet.rateLimiting(ip);
+    const roleResponse = await this.roleGet.getRole(role);
 
+    return new RoleFindOutputDTO(roleResponse);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async getAllRole() {}
+  async getAllRole(@Request() request: any, @Query() filterDto: RoleFilterDTO) {
+    const ip = request.ip;
+    await this.roleAll.rateLimiting(ip);
+    const roles = await this.roleAll.getAllRoles(filterDto);
+
+    return RoleGetAllOutputDTO.fromRoles(roles);
+  }
 
   @Put('/:role')
   async updateRole() {}

@@ -7,7 +7,7 @@ export class RateLimiterService {
 
   constructor() {
     this.rateLimiter = new RateLimiterMemory({
-      points: 2, // Default number of points
+      points: 10, // Default number of points
       duration: 60, // Default duration in seconds
     });
   }
