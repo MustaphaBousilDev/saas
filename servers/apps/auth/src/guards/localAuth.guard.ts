@@ -1,6 +1,11 @@
 import { LoginDTO } from '@app/useCases/auth/dtos';
 import { LoginUseCases } from '@app/useCases/auth/login.usecases';
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 
@@ -12,6 +17,7 @@ export class LocalAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     //const { email, password } = request.body;
     const loginDto = plainToInstance(LoginDTO, request.body);
+    console.log('login DTO', loginDto);
     const errors = await validate(loginDto);
 
     if (errors.length > 0) {

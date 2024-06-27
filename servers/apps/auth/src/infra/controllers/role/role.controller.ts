@@ -1,5 +1,5 @@
+import { IJwtServicePayload } from '@app/domain';
 import { CurrentUser } from '@app/shared';
-import { UserInfoDto } from '@app/shared/dto/userInfo.dto';
 import {
   RoleAllUseCases,
   RoleCreateInputDTO,
@@ -9,6 +9,8 @@ import {
   RoleFilterDTO,
   RoleFindOutputDTO,
   RoleGetUseCases,
+  RoleUpdateInputDTO,
+  RoleUpdateOutputDTO,
   RoleUpdateUseCases,
 } from '@app/useCases/role';
 import { RoleGetAllOutputDTO } from '@app/useCases/role';
@@ -41,12 +43,12 @@ export class RoleController {
   async createRole(
     @Request() request: any,
     @Body() roleDTO: RoleCreateInputDTO,
-    @CurrentUser() user: UserInfoDto,
+    @CurrentUser() user: IJwtServicePayload,
   ): Promise<RoleCreateOutputDTO> {
     const ip = request.ip;
     await this.roleCreate.rateLimiting(ip);
     await this.roleCreate.checkRoleByName(roleDTO.name);
-    const roleResponse = await this.roleCreate.createRole(roleDTO, user._id);
+    const roleResponse = await this.roleCreate.createRole(roleDTO, user.userId);
 
     return new RoleCreateOutputDTO(roleResponse);
   }
@@ -71,8 +73,23 @@ export class RoleController {
     return RoleGetAllOutputDTO.fromRoles(roles);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put('/:role')
-  async updateRole() {}
+  async updateRole(
+    @Request() request: any,
+    @Body() roleDTO: RoleUpdateInputDTO,
+    @CurrentUser() user: any,
+    @Param('role') role: string,
+  ) {
+    const ip = request.ip;
+    await this.roleUpdate.rateLimiting(ip);
+    if (roleDTO.name) {
+      await this.roleUpdate.checkRoleByName(roleDTO.name);
+    }
+    await this.roleUpdate.updateRole(role, user.userId, roleDTO);
+    const newRole = await this.roleUpdate.verifyRoleByName(roleDTO.name);
+    return new RoleUpdateOutputDTO(newRole);
+  }
 
   @Patch('/:role')
   async updatePartialRole() {}

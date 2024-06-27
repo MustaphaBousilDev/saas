@@ -6,7 +6,6 @@ export class RoleCreateInputDTO {
   readonly name: string;
 
   @IsNotEmpty()
-  @IsString()
   @IsOptional()
   readonly status: boolean;
 }

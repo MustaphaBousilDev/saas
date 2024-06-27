@@ -70,6 +70,7 @@ export class RoleCreateUseCases {
 
   async createRole(roleDTO: RoleCreateInputDTO, userId: number): Promise<Role> {
     console.log('before user');
+    console.log('user Id', userId);
     const user = await this.getUser(userId);
     console.log('after user');
     const role = new Role({

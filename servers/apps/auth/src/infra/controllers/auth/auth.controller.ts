@@ -1,5 +1,4 @@
 import { CurrentUser } from '@app/shared';
-import { UserInfoDto } from '@app/shared/dto/userInfo.dto';
 import { LoginUseCases } from '@app/useCases/auth/login.usecases';
 import { LogoutUseCases } from '@app/useCases/auth/logout.usecases';
 import { RegisterUseCases } from '@app/useCases/auth/register.usecases';
@@ -16,6 +15,7 @@ import { Response } from 'express';
 import { LocalAuthGuard } from '../../../guards/localAuth.guard';
 import { JwtAuthGuard } from 'apps/auth/src/guards/jwtAuth.guard';
 import { LoginResponseDTO, RegisterDTO } from '@app/useCases/auth/dtos';
+import { UserInfoDto } from '@app/shared/dto/userInfo.dto';
 @Controller('api/v1/iam/auth')
 export class AuthController {
   constructor(
@@ -34,7 +34,7 @@ export class AuthController {
     const ip = request.ip;
     await this.loginUseCase.rateLimiting(ip);
     const accessTokenCookie = await this.loginUseCase.getCookieWithJwtToken(
-      user?._id,
+      user._id,
     );
     const refreshTokenCookie =
       await this.loginUseCase.getCookieWithJwtRefreshToken(user?._id);
@@ -48,8 +48,6 @@ export class AuthController {
     );
     return {
       id: user._id,
-      username: user.email,
-      email: user.email,
     };
   }
 

@@ -3,6 +3,9 @@ import { Role } from '@app/infra/persistences';
 
 export class RoleUpdateOutputDTO {
   @Expose()
+  readonly message: string;
+
+  @Expose()
   readonly _id: number;
 
   @Expose()
@@ -15,5 +18,6 @@ export class RoleUpdateOutputDTO {
     this._id = role._id;
     this.name = role.name;
     this.status = role.status;
+    this.message = 'Success Updating Role.';
   }
 }

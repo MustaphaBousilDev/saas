@@ -15,12 +15,11 @@ export class JwtTokenService implements IJwtService {
 
   async checkToken(token: string): Promise<any> {
     try {
-      const decoded = await this.jwtService.verifyAsync(token, { secret: this.jwtSecret});
-      //console.log('');
-      //console.log(decoded);
+      const decoded = await this.jwtService.verifyAsync(token, {
+        secret: this.jwtSecret,
+      });
       return decoded; // Return decoded payload if token is valid
     } catch (error) {
-      //console.log('### eror name------------');
       if (error.name === 'TokenExpiredError') {
         throw new Error('Token expired'); // Handle token expiration separately
       }

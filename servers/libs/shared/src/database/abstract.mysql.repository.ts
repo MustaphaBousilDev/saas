@@ -51,7 +51,7 @@ export abstract class AbstractRepositorymySQL<T extends AbstractEntity<T>> {
       this.logger.warn('Entity not found with where', where);
       throw new NotFoundException('Entity not found.');
     }
-    return this.findOne(where);
+    return true;
   }
 
   async find(
