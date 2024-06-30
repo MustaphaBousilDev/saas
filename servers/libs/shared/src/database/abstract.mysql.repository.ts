@@ -1,6 +1,11 @@
-import { Logger, NotFoundException } from '@nestjs/common';
+import {
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { AbstractEntity } from './abstract.entity.mysql';
 import {
+  DeleteResult,
   EntityManager,
   FindManyOptions,
   FindOptionsRelations,
@@ -21,37 +26,54 @@ export abstract class AbstractRepositorymySQL<T extends AbstractEntity<T>> {
 
   //Omit is an utility typescript for create a new type and in this situation the new type is all propertyType to TDOcument except '_id' <-this is new Type is for document parzmetre
   async create(entity: T): Promise<T> {
-    const savedEntity = await this.entityManager.save(entity);
-    return savedEntity;
+    try {
+      const savedEntity = await this.entityManager.save(entity);
+      return savedEntity;
+    } catch (error) {
+      this.logger.error('Error creating entity', error);
+      throw new InternalServerErrorException('Error creating entity');
+    }
   }
 
   async findOne(
     where: FindOptionsWhere<T>,
     relations?: FindOptionsRelations<T>,
   ): Promise<T> {
-    const entity = await this.entityRepository.findOne({ where, relations });
-    if (!entity) {
-      this.logger.warn('Document was not found with filterQuery', where);
-      throw new NotFoundException('Entity was not found');
-    } else {
+    try {
+      const entity = await this.entityRepository.findOne({ where, relations });
+      if (!entity) {
+        this.logger.warn(
+          'Document was not found with filterQuery',
+          JSON.stringify(where),
+        );
+        throw new NotFoundException('Entity was not found');
+      }
       this.logger.debug('Entity Found:', entity);
+      return entity;
+    } catch (error) {
+      this.logger.error('Error finding entity', error);
+      throw new InternalServerErrorException('Error finding entity');
     }
-    return entity;
   }
 
   async findOneAndUpdate(
     where: FindOptionsWhere<T>,
     partialEntity: QueryDeepPartialEntity<T>,
   ) {
-    const updateResult = await this.entityRepository.update(
-      where,
-      partialEntity,
-    );
-    if (!updateResult.affected) {
-      this.logger.warn('Entity not found with where', where);
-      throw new NotFoundException('Entity not found.');
+    try {
+      const updateResult = await this.entityRepository.update(
+        where,
+        partialEntity,
+      );
+      if (!updateResult.affected) {
+        this.logger.warn('Entity not found with where', where);
+        throw new NotFoundException('Entity not found');
+      }
+      return true;
+    } catch (error) {
+      this.logger.error('Error updating entity', error);
+      throw new InternalServerErrorException('Error updating entity');
     }
-    return true;
   }
 
   async find(
@@ -60,16 +82,45 @@ export abstract class AbstractRepositorymySQL<T extends AbstractEntity<T>> {
     skip?: number,
     take?: number,
   ): Promise<T[]> {
-    return this.entityRepository.find({
-      where,
-      relations,
-      skip,
-      take,
-    });
+    try {
+      const find = await this.entityRepository.find({
+        where,
+        relations,
+        skip,
+        take,
+      });
+      if (find.length === 0) {
+        this.logger.warn('Entities not found with filter query', where);
+        throw new NotFoundException('Not Found');
+      }
+      return find;
+    } catch (error) {
+      this.logger.error('Error finding entities', error);
+      if (error instanceof NotFoundException) {
+        return [];
+      } else {
+        throw new InternalServerErrorException('Error finding entities');
+      }
+    }
   }
 
-  async findOneAndDelete(where: FindOptionsWhere<T>) {
-    return this.entityRepository.delete(where);
+  async findOneAndDelete(where: FindOptionsWhere<T>): Promise<DeleteResult> {
+    try {
+      const result = await this.entityRepository.delete(where);
+      if (result.affected === 0) {
+        this.logger.warn('Entity not found with where', where);
+        throw new NotFoundException('Record not found'); // Return an appropriate error
+      }
+      return result;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        this.logger.error(error.message);
+        throw new NotFoundException('Record not found'); // Return an appropriate error
+      } else {
+        this.logger.error('An unexpected error occurred:', error);
+        throw new InternalServerErrorException('An unexpected error occurred');
+      }
+    }
   }
 
   async findMany(options?: FindManyOptions<T>): Promise<T[]> {

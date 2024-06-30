@@ -5,6 +5,7 @@ import {
   RoleCreateInputDTO,
   RoleCreateOutputDTO,
   RoleCreateUseCases,
+  RoleDeleteOutputDTO,
   RoleDeleteUseCases,
   RoleFilterDTO,
   RoleFindOutputDTO,
@@ -56,11 +57,15 @@ export class RoleController {
   @UseGuards(JwtAuthGuard)
   @Get('/:role')
   async getRole(@Param('role') role: string, @Request() request: any) {
-    const ip = request.ip;
-    await this.roleGet.rateLimiting(ip);
-    const roleResponse = await this.roleGet.getRole(role);
+    try {
+      const ip = request.ip;
+      await this.roleGet.rateLimiting(ip);
+      const roleResponse = await this.roleGet.getRole(role);
 
-    return new RoleFindOutputDTO(roleResponse);
+      return new RoleFindOutputDTO(roleResponse);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -94,6 +99,21 @@ export class RoleController {
   @Patch('/:role')
   async updatePartialRole() {}
 
+  @UseGuards(JwtAuthGuard)
   @Delete('/:role')
-  async deleteRole() {}
+  async deleteRole(
+    @Request() request: any,
+    @CurrentUser() user: any,
+    @Param('role') role: string,
+  ) {
+    console.log('request', request);
+    console.log('user:', user);
+    console.log('role:', role);
+    const ip = request.ip;
+    await this.roleDelete.rateLimiting(ip);
+    const roleInfo = await this.roleDelete.checkRole(role);
+    console.log('hhhhh');
+    await this.roleDelete.deleteRole(role);
+    return new RoleDeleteOutputDTO(roleInfo);
+  }
 }

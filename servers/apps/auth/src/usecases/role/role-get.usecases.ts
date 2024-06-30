@@ -4,9 +4,10 @@ import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.servic
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { FindOptionsWhere } from 'typeorm';
+//import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class RoleGetUseCases {
@@ -32,24 +33,28 @@ export class RoleGetUseCases {
   }
 
   async getRole(roleName: string): Promise<Role> {
-    const where: FindOptionsWhere<Role> = {};
-    where.name = roleName;
-    const role = await this.roleRepository.findOne(where, { user: true });
+    //const where: FindOptionsWhere<Role> = { name: roleName };
+    //where.name = roleName;
     try {
-      if (role) {
-        this.logger.log(
-          'Succes Get Role',
-          `Success Find Role with this name: ${roleName}`,
-        );
-        return role;
-      }
-      throw new NotFoundException('This Role not exist');
-    } catch (err) {
-      this.logger.error(
-        'Error Find role',
-        `Error occurred while finding Role that has name : ${roleName}`,
+      const role = await this.roleRepository.findOne(
+        { name: roleName },
+        { user: true },
       );
-      throw new BadRequestException('Someting wrong');
+      if (!role) {
+        this.logger.warn(
+          'Role not found',
+          `Role with name ${roleName} does not exist`,
+        );
+        throw new NotFoundException('Role not found');
+      }
+      this.logger.log(
+        'Success Get Role',
+        `Successfully found role with name: ${roleName}`,
+      );
+      return role;
+    } catch (err) {
+      this.logger.error('Error Find role', `${err}`);
+      throw new InternalServerErrorException(`${err.message}`);
     }
   }
 }

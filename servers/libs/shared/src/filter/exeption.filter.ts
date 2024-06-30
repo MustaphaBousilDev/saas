@@ -5,7 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { LoggerService } from 'apps/auth/src/infra/logger/logger.service'; 
+import { LoggerService } from 'apps/auth/src/infra/logger/logger.service';
 
 interface IError {
   message: string;
@@ -48,21 +48,14 @@ export class AllExceptionFilter implements ExceptionFilter {
     status: number,
     exception: any,
   ) {
-    if (status === 500) {
-      this.logger.error(
-        `End Request for ${request.path}`,
-        `method=${request.method} status=${status} code_error=${
-          message.code_error ? message.code_error : null
-        } message=${message.message ? message.message : null}`,
-        status >= 500 ? exception.stack : '',
-      );
+    const logLevel =
+      status === HttpStatus.INTERNAL_SERVER_ERROR ? 'error' : 'warn';
+    const logMessage = `End Request for ${request.path}, method=${request.method} status=${status} code_error=${message.code_error ?? 'null'} message=${message.message ?? 'null'}`;
+
+    if (logLevel === 'error') {
+      this.logger.error(logMessage, exception.stack);
     } else {
-      this.logger.warn(
-        `End Request for ${request.path}`,
-        `method=${request.method} status=${status} code_error=${
-          message.code_error ? message.code_error : null
-        } message=${message.message ? message.message : null}`,
-      );
+      this.logger.warn('Warning', logMessage);
     }
   }
 }
