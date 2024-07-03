@@ -15,6 +15,7 @@ import {
   RoleCreateUseCases,
   RoleDeleteUseCases,
   RoleGetUseCases,
+  RolePatchUseCases,
   RoleUpdateUseCases,
 } from './role';
 
@@ -42,6 +43,7 @@ import {
     RoleDeleteUseCases,
     RoleGetUseCases,
     RoleUpdateUseCases,
+    RolePatchUseCases,
   ],
   providers: [
     //auth
@@ -54,6 +56,7 @@ import {
     RoleDeleteUseCases,
     RoleGetUseCases,
     RoleUpdateUseCases,
+    RolePatchUseCases,
   ],
 })
 export class UseCasesModule {}

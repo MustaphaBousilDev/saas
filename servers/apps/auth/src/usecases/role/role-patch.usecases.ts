@@ -11,10 +11,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { RoleCreateInputDTO } from './dtos';
+import { RoleUpdateInputDTO } from './dtos';
 
 @Injectable()
-export class RoleUpdateUseCases {
+export class RolePatchUseCases {
   constructor(
     private readonly logger: LoggerService,
     private readonly roleRepository: RoleRepositorySQL,
@@ -84,7 +84,7 @@ export class RoleUpdateUseCases {
     }
   }
 
-  async updateRole(name: string, userId: number, roleDTO: RoleCreateInputDTO) {
+  async updateRole(name: string, userId: number, roleDTO: RoleUpdateInputDTO) {
     try {
       const getRole = await this.verifyRoleByName(name);
       if (getRole) {

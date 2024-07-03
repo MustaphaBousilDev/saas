@@ -10,6 +10,7 @@ import {
   RoleFilterDTO,
   RoleFindOutputDTO,
   RoleGetUseCases,
+  RolePatchUseCases,
   RoleUpdateInputDTO,
   RoleUpdateOutputDTO,
   RoleUpdateUseCases,
@@ -37,6 +38,7 @@ export class RoleController {
     private readonly roleDelete: RoleDeleteUseCases,
     private readonly roleGet: RoleGetUseCases,
     private readonly roleUpdate: RoleUpdateUseCases,
+    private readonly rolePatch: RolePatchUseCases,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -82,37 +84,45 @@ export class RoleController {
   @Put('/:role')
   async updateRole(
     @Request() request: any,
-    @Body() roleDTO: RoleUpdateInputDTO,
+    @Body() roleDTO: RoleCreateInputDTO,
     @CurrentUser() user: any,
     @Param('role') role: string,
   ) {
     const ip = request.ip;
     await this.roleUpdate.rateLimiting(ip);
-    if (roleDTO.name) {
-      await this.roleUpdate.checkRoleByName(roleDTO.name);
-    }
+    await this.roleUpdate.checkRoleByName(roleDTO.name);
     await this.roleUpdate.updateRole(role, user.userId, roleDTO);
     const newRole = await this.roleUpdate.verifyRoleByName(roleDTO.name);
     return new RoleUpdateOutputDTO(newRole);
   }
 
-  @Patch('/:role')
-  async updatePartialRole() {}
-
   @UseGuards(JwtAuthGuard)
-  @Delete('/:role')
-  async deleteRole(
+  @Patch('/:role')
+  async updatePartialRole(
     @Request() request: any,
+    @Body() roleDTO: RoleUpdateInputDTO,
     @CurrentUser() user: any,
     @Param('role') role: string,
   ) {
-    console.log('request', request);
-    console.log('user:', user);
-    console.log('role:', role);
+    const ip = request.ip;
+    await this.rolePatch.rateLimiting(ip);
+    if (roleDTO.name) {
+      await this.rolePatch.checkRoleByName(roleDTO.name);
+    }
+    await this.rolePatch.updateRole(role, user.userId, roleDTO);
+    if (roleDTO.name) {
+      const newRole = await this.rolePatch.verifyRoleByName(roleDTO.name);
+      return new RoleUpdateOutputDTO(newRole);
+    }
+    return 'Success Update Partial';
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:role')
+  async deleteRole(@Request() request: any, @Param('role') role: string) {
     const ip = request.ip;
     await this.roleDelete.rateLimiting(ip);
     const roleInfo = await this.roleDelete.checkRole(role);
-    console.log('hhhhh');
     await this.roleDelete.deleteRole(role);
     return new RoleDeleteOutputDTO(roleInfo);
   }
