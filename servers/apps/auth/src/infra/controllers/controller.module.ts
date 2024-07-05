@@ -3,7 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthController } from './auth';
 import { UseCasesModule } from '@app/useCases/usecases.module';
 import { JwtModule } from '../services/jwt';
-import { RoleController } from './role/role.controller';
+import { RoleController } from './role';
+import { PermissionController } from './permissions';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { RoleController } from './role/role.controller';
       isGlobal: true,
     }),
   ],
-  controllers: [AuthController, RoleController],
+  controllers: [AuthController, RoleController, PermissionController],
   providers: [],
   exports: [],
 })

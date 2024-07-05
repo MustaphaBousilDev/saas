@@ -18,6 +18,14 @@ import {
   RolePatchUseCases,
   RoleUpdateUseCases,
 } from './role';
+import {
+  PermissionAllUseCases,
+  PermissionCreateUseCases,
+  PermissionDeleteUseCases,
+  PermissionGetUseCases,
+  PermissionPatchUseCases,
+  PermissionUpdateUseCases,
+} from './permission';
 
 @Module({
   imports: [
@@ -44,6 +52,13 @@ import {
     RoleGetUseCases,
     RoleUpdateUseCases,
     RolePatchUseCases,
+    //permission
+    PermissionAllUseCases,
+    PermissionCreateUseCases,
+    PermissionDeleteUseCases,
+    PermissionGetUseCases,
+    PermissionUpdateUseCases,
+    PermissionPatchUseCases,
   ],
   providers: [
     //auth
@@ -57,6 +72,13 @@ import {
     RoleGetUseCases,
     RoleUpdateUseCases,
     RolePatchUseCases,
+    //permission
+    PermissionAllUseCases,
+    PermissionCreateUseCases,
+    PermissionDeleteUseCases,
+    PermissionGetUseCases,
+    PermissionUpdateUseCases,
+    PermissionPatchUseCases,
   ],
 })
 export class UseCasesModule {}

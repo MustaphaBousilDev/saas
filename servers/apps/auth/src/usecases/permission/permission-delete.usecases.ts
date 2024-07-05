@@ -1,7 +1,7 @@
 import { LoggerService } from '@app/infra/logger/logger.service';
 import {
-  Role,
-  RoleRepositorySQL,
+  Permission,
+  PermissionRepositorySQL,
   UserRepositorySQL,
 } from '@app/infra/persistences';
 import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.service';
@@ -12,10 +12,10 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class RoleDeleteUseCases {
+export class PermissionDeleteUseCases {
   constructor(
     private readonly logger: LoggerService,
-    private readonly roleRepository: RoleRepositorySQL,
+    private readonly permissionRepository: PermissionRepositorySQL,
     private readonly userRepository: UserRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
   ) {}
@@ -27,56 +27,59 @@ export class RoleDeleteUseCases {
     } else {
       this.logger.error(
         'Rate limited Failed',
-        'Rate limited exceded Create Role (Failed)',
+        'Rate limited exceded Create Permission (Failed)',
       );
       throw new BadRequestException('rate limited exceeded Register (Failed)');
     }
   }
 
-  async checkRole(name: string): Promise<Role | any> {
+  async checkPermission(name: string): Promise<Permission | any> {
     try {
-      const role = await this.roleRepository.find({ name });
-      if (role.length > 0) {
+      const permission = await this.permissionRepository.find({ name });
+      if (permission.length > 0) {
         this.logger.log(
-          'Success Find Role',
-          `Success Find Role with this name: ${name} in the database`,
+          'Success Find Permission',
+          `Success Find Permission with this name: ${name} in the database`,
         );
-        return role;
+        return permission;
       }
       this.logger.warn(
-        'Not Found Role 404',
-        `This role name: ${name} not exist in the database`,
+        'Not Found Permission 404',
+        `This permission name: ${name} not exist in the database`,
       );
       return null;
     } catch (error) {
       this.logger.error(
-        `Error found Role`,
-        `Error occurred while Find Role with this name: ${name} , Message Error: ${error}`,
+        `Error found Permission`,
+        `Error occurred while Find Permission with this name: ${name} , Message Error: ${error}`,
       );
-      throw new NotFoundException(`Role Not found`);
+      throw new NotFoundException(`Permission Not found`);
     }
   }
 
-  async deleteRole(name: string): Promise<string> {
+  async deletePermission(name: string): Promise<string> {
     try {
-      const result = await this.roleRepository.findOneAndDelete({ name });
+      const result = await this.permissionRepository.findOneAndDelete({ name });
       if (result.affected === 0) {
-        throw new NotFoundException('Role not found');
+        throw new NotFoundException('Permission not found');
       }
       this.logger.log(
-        'Success Deleting Role',
-        `Successfully deleted role with name: ${name}`,
+        'Success Deleting Permission',
+        `Successfully deleted permission with name: ${name}`,
       );
       return name;
     } catch (error) {
       if (error instanceof NotFoundException) {
-        this.logger.error('Error Deleting role', `Role not found: ${name}`);
+        this.logger.error(
+          'Error Deleting permission',
+          `Permission not found: ${name}`,
+        );
         throw new BadRequestException(`
           Something went wrong, error: ${error.message}`);
       } else {
         this.logger.error(
-          'Error Deleting role',
-          `Unexpected error while deleting role: ${error.message}`,
+          'Error Deleting permission',
+          `Unexpected error while deleting permission: ${error.message}`,
         );
         throw new BadRequestException(`
           Something went wrong, error: ${error.message}`);

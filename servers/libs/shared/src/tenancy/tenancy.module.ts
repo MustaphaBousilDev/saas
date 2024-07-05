@@ -1,6 +1,5 @@
 import { Global, Module, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
-import { Request as ExpressRequest } from 'express';
 import { getTenantConnection } from './tenancy.utils';
 
 import { CONNECTION } from './tenancy.symbols';
@@ -17,12 +16,7 @@ const connectionFactory = {
   scope: Scope.REQUEST,
   useFactory: (request: any) => {
     const { tenantId } = request;
-    console.log('hohohooh');
-    console.log(tenantId);
-
     if (tenantId) {
-      console.log('yoyooyoyodddyo');
-      console.log(tenantId);
       return getTenantConnection(tenantId);
     }
 

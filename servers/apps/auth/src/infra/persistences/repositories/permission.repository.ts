@@ -1,8 +1,9 @@
 import { AbstractRepositorymySQL } from '@app/shared';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Permission } from '../entities/permession.entity';
+import { CONNECTION } from '@app/shared/tenancy/tenancy.symbols';
 
 @Injectable()
 export class PermissionRepositorySQL extends AbstractRepositorymySQL<Permission> {
@@ -12,7 +13,11 @@ export class PermissionRepositorySQL extends AbstractRepositorymySQL<Permission>
     @InjectRepository(Permission)
     permissionRepository: Repository<Permission>,
     entityManager: EntityManager,
+    @Inject(CONNECTION) private readonly dataSource: DataSource,
   ) {
-    super(permissionRepository, entityManager);
+    super(
+      dataSource.getRepository(Permission),
+      dataSource.createEntityManager(),
+    );
   }
 }

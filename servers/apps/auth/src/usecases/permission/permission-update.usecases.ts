@@ -1,7 +1,7 @@
 import { LoggerService } from '@app/infra/logger/logger.service';
 import {
-  Role,
-  RoleRepositorySQL,
+  Permission,
+  PermissionRepositorySQL,
   UserAuth,
   UserRepositorySQL,
 } from '@app/infra/persistences';
@@ -11,13 +11,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { RoleCreateInputDTO } from './dtos';
+import { PermissionCreateInputDTO } from './dtos';
 
 @Injectable()
-export class RoleUpdateUseCases {
+export class PermissionUpdateUseCases {
   constructor(
     private readonly logger: LoggerService,
-    private readonly roleRepository: RoleRepositorySQL,
+    private readonly permissionRepository: PermissionRepositorySQL,
     private readonly userRepository: UserRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
   ) {}
@@ -29,7 +29,7 @@ export class RoleUpdateUseCases {
     } else {
       this.logger.error(
         'Rate Limited Failed',
-        `Rate limited exceded create Role (Failed)`,
+        `Rate limited exceded create Permission (Failed)`,
       );
       throw new BadRequestException('rate limited exceeded Register (Failed)');
     }
@@ -54,48 +54,53 @@ export class RoleUpdateUseCases {
     }
   }
 
-  async verifyRoleByName(name: string): Promise<Role | any> {
+  async verifyPermissionByName(name: string): Promise<Permission | any> {
     try {
-      const role = await this.roleRepository.findOne({ name });
-      if (role) {
+      const permission = await this.permissionRepository.findOne({ name });
+      if (permission) {
         this.logger.log(
-          'Role Success',
-          `Role with this name: ${name} was found it in the database`,
+          'Permission Success',
+          `Permission with this name: ${name} was found it in the database`,
         );
       }
-      return role;
+      return permission;
     } catch (error) {
       this.logger.error(
-        'Error fetching role',
-        `Error occurred while fetching role with Name: ${name}: ${error.message}`,
+        'Error fetching permission',
+        `Error occurred while fetching permission with Name: ${name}: ${error.message}`,
       );
-      throw new NotFoundException('Role not found');
+      throw new NotFoundException('Permission not found');
     }
   }
 
-  async checkRoleByName(name: string) {
-    const role = await this.roleRepository.find({ name });
-    if (role.length > 0) {
+  async checkPermissionByName(name: string) {
+    const permission = await this.permissionRepository.find({ name });
+    if (permission.length > 0) {
       this.logger.warn(
-        'Duplicate role name',
-        `Role with name '${name}' already exists while trying to create a new role`,
+        'Duplicate permission name',
+        `Permission with name '${name}' already exists while trying to create a new permission`,
       );
-      throw new NotFoundException(`Role with name '${name}' already exists`);
+      throw new NotFoundException(`
+        Permission with name '${name}' already exists`);
     }
   }
 
-  async updateRole(name: string, userId: number, roleDTO: RoleCreateInputDTO) {
+  async updatePermission(
+    name: string,
+    userId: number,
+    roleDTO: PermissionCreateInputDTO,
+  ) {
     try {
-      const getRole = await this.verifyRoleByName(name);
+      const getRole = await this.verifyPermissionByName(name);
       if (getRole) {
         this.logger.log(
-          'Success Find Role',
-          'Success geting role from the database',
+          'Success Find Permission',
+          'Success geting permission from the database',
         );
         const user = await this.getUser(userId);
         roleDTO['user'] = user;
-        //update role
-        return this.roleRepository.findOneAndUpdate(
+        //update permission
+        return this.permissionRepository.findOneAndUpdate(
           { name },
           {
             ...roleDTO,
@@ -105,10 +110,10 @@ export class RoleUpdateUseCases {
       }
     } catch (error) {
       this.logger.error(
-        'Error updating  role',
-        `Error occured while updating role: ${error.message}`,
+        'Error updating  permission',
+        `Error occured while updating permission: ${error.message}`,
       );
-      throw new BadRequestException('Failed process updating role');
+      throw new BadRequestException('Failed process updating permission');
     }
   }
 }

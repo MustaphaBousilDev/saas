@@ -5,10 +5,10 @@ import { Role_Has_Resource_Permission } from './role_has_resource_permission';
 
 @Entity()
 export class Permission extends AbstractEntity<Permission> {
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', unique: true })
   name: string;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: true })
   status: boolean;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

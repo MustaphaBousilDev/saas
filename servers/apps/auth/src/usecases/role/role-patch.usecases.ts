@@ -95,12 +95,42 @@ export class RolePatchUseCases {
         const user = await this.getUser(userId);
         roleDTO['user'] = user;
         //update role
-        return this.roleRepository.findOneAndUpdate({ name }, roleDTO);
+        return this.roleRepository.findOneAndUpdate(
+          { name },
+          {
+            ...roleDTO,
+            updatedAt: new Date(),
+          },
+        );
       }
     } catch (error) {
       this.logger.error(
         'Error updating  role',
         `Error occured while updating role: ${error.message}`,
+      );
+      throw new BadRequestException('Failed process updating role');
+    }
+  }
+
+  async softDelete(name: string) {
+    try {
+      const getRole = await this.verifyRoleByName(name);
+      if (getRole) {
+        this.logger.log(
+          'Success Find Role',
+          `Success Getting role : ${name} from the database`,
+        );
+        return this.roleRepository.findOneAndUpdate(
+          { name },
+          {
+            deletedAt: new Date(),
+          },
+        );
+      }
+    } catch (error) {
+      this.logger.error(
+        'Error updating role to softDelete',
+        `Error occured while updating role softdelete: ${error.message}`,
       );
       throw new BadRequestException('Failed process updating role');
     }
