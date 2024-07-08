@@ -26,6 +26,14 @@ import {
   PermissionPatchUseCases,
   PermissionUpdateUseCases,
 } from './permission';
+import {
+  ResourceAllUseCases,
+  ResourceCreateUseCases,
+  ResourceDeleteUseCases,
+  ResourceGetUseCases,
+  ResourcePatchUseCases,
+  ResourceUpdateUseCases,
+} from './resource';
 
 @Module({
   imports: [
@@ -59,6 +67,13 @@ import {
     PermissionGetUseCases,
     PermissionUpdateUseCases,
     PermissionPatchUseCases,
+    //resource
+    ResourceAllUseCases,
+    ResourceCreateUseCases,
+    ResourceDeleteUseCases,
+    ResourceGetUseCases,
+    ResourceUpdateUseCases,
+    ResourcePatchUseCases,
   ],
   providers: [
     //auth
@@ -79,6 +94,13 @@ import {
     PermissionGetUseCases,
     PermissionUpdateUseCases,
     PermissionPatchUseCases,
+    //resource
+    ResourceAllUseCases,
+    ResourceCreateUseCases,
+    ResourceDeleteUseCases,
+    ResourceGetUseCases,
+    ResourceUpdateUseCases,
+    ResourcePatchUseCases,
   ],
 })
 export class UseCasesModule {}

@@ -13,7 +13,7 @@ import { UserDetailAuth } from '../entities/user-details.entity';
 import { ResourceRepositorySQL } from './resource.repository';
 import { Resource } from '../entities/resources.entity';
 import { Role_Has_Resource_Permission } from '../entities/role_has_resource_permission';
-import { RoleResourcePermissionRepositorySQL } from './role-resource-permission.respository';
+import { ResourceRolePermessionRepositorySQL } from './resources-role-permission.repository';
 import {
   AccountLockOut,
   FailedLoginAttempts,
@@ -56,7 +56,7 @@ import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
     RoleRepositorySQL,
     PermissionRepositorySQL,
     ResourceRepositorySQL,
-    RoleResourcePermissionRepositorySQL,
+    ResourceRolePermessionRepositorySQL,
     //LocalStrategy,
   ],
   exports: [
@@ -66,7 +66,7 @@ import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
     RoleRepositorySQL,
     PermissionRepositorySQL,
     ResourceRepositorySQL,
-    RoleResourcePermissionRepositorySQL,
+    ResourceRolePermessionRepositorySQL,
   ],
 })
 export class RepositoryModule {}

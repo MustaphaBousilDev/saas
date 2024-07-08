@@ -1,5 +1,4 @@
 import { Role } from '@app/infra/persistences';
-import { UserGetDTO } from '@app/useCases/user/dtos';
 import { Expose } from 'class-transformer';
 
 export class RoleFindOutputDTO {
@@ -19,13 +18,13 @@ export class RoleFindOutputDTO {
   readonly deletedAt?: Date;
 
   @Expose()
-  readonly userCreated?: UserGetDTO;
+  readonly userCreated?: any;
 
   constructor(role: Role) {
     this.name = role.name;
     this.status = role.status;
     this.createdAt = role.createdAt;
     this.updatedAt = role.updatedAt;
-    this.userCreated = role.user ? new UserGetDTO(role.user) : undefined;
+    this.userCreated = role.user ? role.user : undefined;
   }
 }

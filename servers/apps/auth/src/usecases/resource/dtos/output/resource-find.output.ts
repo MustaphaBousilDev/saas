@@ -1,7 +1,7 @@
 import { Role } from '@app/infra/persistences';
 import { Expose } from 'class-transformer';
 
-export class UserDTO {
+class UserDTO {
   @Expose()
   email: string;
   @Expose()
@@ -12,7 +12,8 @@ export class UserDTO {
     this.username = user.username;
   }
 }
-export class RoleGetAllOutputDTO {
+
+export class ResourceFindOutputDTO {
   @Expose()
   readonly name: string;
 
@@ -37,9 +38,5 @@ export class RoleGetAllOutputDTO {
     this.createdAt = role.createdAt;
     this.updatedAt = role.updatedAt;
     this.userCreated = role.user ? new UserDTO(role.user) : undefined;
-  }
-
-  static fromRoles(roles: Role[]): RoleGetAllOutputDTO[] {
-    return roles.map((role) => new RoleGetAllOutputDTO(role));
   }
 }

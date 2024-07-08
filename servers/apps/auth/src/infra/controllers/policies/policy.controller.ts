@@ -5,6 +5,7 @@ import { RegisterUseCases } from '@app/useCases/auth/register.usecases';
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Patch,
   Post,
@@ -19,7 +20,7 @@ import { JwtAuthGuard } from 'apps/auth/src/guards/jwtAuth.guard';
 import { LoginResponseDTO, RegisterDTO } from '@app/useCases/auth/dtos';
 import { UserInfoDto } from '@app/shared/dto/userInfo.dto';
 @Controller('api/v1/iam/users')
-export class UserController {
+export class PolicyController {
   constructor(
     private readonly loginUseCase: LoginUseCases,
     private readonly registerUseCase: RegisterUseCases,
@@ -27,23 +28,23 @@ export class UserController {
   ) {}
 
   @Get()
-  async getAllUser() {}
+  async getAllPolicy() {}
+
+  @Get()
+  async getPolicy() {}
+
+  @Post()
+  async createPolicy() {}
 
   @Patch('/:user')
-  async updayeEmail() {}
+  async updatePartialPolicy() {}
 
-  @Patch('/:changePassword')
-  async changePassword() {}
+  @Put('/:user')
+  async updatePolicy() {}
 
-  @Patch('/:updatePicture')
-  async updatePicture() {}
+  @Delete()
+  async deletePolicy() {}
 
-  @Patch('/:activated')
-  async activateAccount() {}
-
-  @Put('/:profile')
-  async updateProfile() {}
-
-  @Get('/:picture')
-  async getPicture() {}
+  @Patch()
+  async softDeletePolicy() {}
 }

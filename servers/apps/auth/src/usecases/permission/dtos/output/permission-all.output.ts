@@ -1,6 +1,17 @@
 import { Permission } from '@app/infra/persistences';
-import { UserGetDTO } from '@app/useCases/user/dtos';
 import { Expose } from 'class-transformer';
+
+export class UserDTO {
+  @Expose()
+  email: string;
+  @Expose()
+  username: string;
+
+  constructor(user: any) {
+    this.email = user.email;
+    this.username = user.username;
+  }
+}
 
 export class PermissionGetAllOutputDTO {
   @Expose()
@@ -19,7 +30,7 @@ export class PermissionGetAllOutputDTO {
   readonly deletedAt?: Date;
 
   @Expose()
-  readonly userCreated?: UserGetDTO;
+  readonly userCreated?: UserDTO;
 
   constructor(permission: Permission) {
     this.name = permission.name;
@@ -27,7 +38,7 @@ export class PermissionGetAllOutputDTO {
     this.createdAt = permission.createdAt;
     this.updatedAt = permission.updatedAt;
     this.userCreated = permission.user
-      ? new UserGetDTO(permission.user)
+      ? new UserDTO(permission.user)
       : undefined;
   }
 

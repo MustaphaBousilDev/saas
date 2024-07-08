@@ -5,6 +5,8 @@ import { UseCasesModule } from '@app/useCases/usecases.module';
 import { JwtModule } from '../services/jwt';
 import { RoleController } from './role';
 import { PermissionController } from './permissions';
+import { UserController } from './user';
+import { ResourceController } from './resources';
 
 @Module({
   imports: [
@@ -14,7 +16,13 @@ import { PermissionController } from './permissions';
       isGlobal: true,
     }),
   ],
-  controllers: [AuthController, RoleController, PermissionController],
+  controllers: [
+    AuthController,
+    RoleController,
+    PermissionController,
+    UserController,
+    ResourceController,
+  ],
   providers: [],
   exports: [],
 })
