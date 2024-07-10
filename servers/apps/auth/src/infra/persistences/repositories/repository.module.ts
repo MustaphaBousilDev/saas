@@ -24,6 +24,7 @@ import {
   Policies,
 } from '../entities';
 import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
+import { PolicyRepositorySQL } from './policy.repository';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
     PermissionRepositorySQL,
     ResourceRepositorySQL,
     ResourceRolePermessionRepositorySQL,
+    PolicyRepositorySQL,
     //LocalStrategy,
   ],
   exports: [
@@ -67,6 +69,7 @@ import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
     PermissionRepositorySQL,
     ResourceRepositorySQL,
     ResourceRolePermessionRepositorySQL,
+    PolicyRepositorySQL,
   ],
 })
 export class RepositoryModule {}

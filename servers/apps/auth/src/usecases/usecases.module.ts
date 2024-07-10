@@ -34,6 +34,14 @@ import {
   ResourcePatchUseCases,
   ResourceUpdateUseCases,
 } from './resource';
+import {
+  PolicyAllUseCases,
+  PolicyCreateUseCases,
+  PolicyDeleteUseCases,
+  PolicyGetUseCases,
+  PolicyPatchUseCases,
+  PolicyUpdateUseCases,
+} from './policies';
 
 @Module({
   imports: [
@@ -74,6 +82,13 @@ import {
     ResourceGetUseCases,
     ResourceUpdateUseCases,
     ResourcePatchUseCases,
+    //policy
+    PolicyAllUseCases,
+    PolicyCreateUseCases,
+    PolicyDeleteUseCases,
+    PolicyGetUseCases,
+    PolicyUpdateUseCases,
+    PolicyPatchUseCases,
   ],
   providers: [
     //auth
@@ -101,6 +116,13 @@ import {
     ResourceGetUseCases,
     ResourceUpdateUseCases,
     ResourcePatchUseCases,
+    //policy
+    PolicyAllUseCases,
+    PolicyCreateUseCases,
+    PolicyDeleteUseCases,
+    PolicyGetUseCases,
+    PolicyUpdateUseCases,
+    PolicyPatchUseCases,
   ],
 })
 export class UseCasesModule {}
