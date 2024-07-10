@@ -1,4 +1,3 @@
-import { LoginUseCases } from '@app/useCases/auth/login.usecases';
 import {
   CanActivate,
   ExecutionContext,
@@ -6,27 +5,50 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtTokenService } from '@app/infra/services/jwt/jwt.service';
+import { cp } from 'fs';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(
-    private readonly useCasesLogin: LoginUseCases,
-    private readonly jwtService: JwtTokenService,
-  ) {}
+  constructor(private readonly jwtService: JwtTokenService) {}
 
   async canActivate(context: ExecutionContext): Promise<any> {
     const request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
-    if (!token) {
-      throw new UnauthorizedException('Token not found');
-    }
     try {
+      const token = this.extractTokenFromHeader(request);
+      /*if (!token) {
+        throw new UnauthorizedException('Token not found');
+      }*/
       const payload = await this.jwtService.checkToken(token);
       request.user = payload;
-    } catch {
-      throw new UnauthorizedException('Invalid Token');
+      return true;
+    } catch (error) {
+      console.log('fucking error', error.message);
+      if (
+        error instanceof UnauthorizedException &&
+        error.message === 'Token invalid'
+      ) {
+        console.log('tonen is expired, yesss bitch');
+        const refreshToken = this.extractRefreshTokenFromHeader(request);
+        if (!refreshToken) {
+          throw new UnauthorizedException('Refresh token not found');
+        }
+        try {
+          const newAccessToken =
+            await this.jwtService.refreshToken(refreshToken);
+          request.headers['Authorization'] = `${newAccessToken}`;
+          console.log('heading', request.headers['Authorization']);
+          const newPayload = await this.jwtService.checkToken(
+            request.headers['Authorization'],
+          );
+          request.user = newPayload;
+          return true;
+        } catch {
+          throw new UnauthorizedException('Invalid refresh tokendd');
+        }
+      }
+      throw new UnauthorizedException('Invalid token');
+      //throw new UnauthorizedException('Invalid Token');
     }
-    return true;
   }
 
   private extractTokenFromHeader(request: any): string | null {
@@ -38,5 +60,13 @@ export class JwtAuthGuard implements CanActivate {
 
     //const [type, token] = authHeader.split(' ');
     return authHeader;
+  }
+
+  private extractRefreshTokenFromHeader(request: any): string | null {
+    const refreshHeader = request?.cookies?.Refresh || request?.Refresh;
+    if (!refreshHeader) {
+      return null;
+    }
+    return refreshHeader;
   }
 }

@@ -38,7 +38,7 @@ async function bootstrap() {
     const { name: schema } = schemas[i];
     if (schema.startsWith('tenant_')) {
       const tenantId = schema.replace('tenant_', '');
-      console.log('id:', tenantId);
+      //console.log('id:', tenantId);
       const connection = await getTenantConnection(tenantId);
       await connection.runMigrations();
       //await connection.destroy();

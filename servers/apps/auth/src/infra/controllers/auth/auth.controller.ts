@@ -57,7 +57,6 @@ export class AuthController {
     @Request() request: any,
     @Res({ passthrough: true }) res: Response,
   ) {
-    console.log('register', registerDTO);
     const ip = request.ip;
     await this.registerUseCase.rateLimiting(ip);
     const response = await this.registerUseCase.registerUser(registerDTO);
@@ -88,7 +87,6 @@ export class AuthController {
   @Get('/me')
   @UseGuards(JwtAuthGuard)
   async getUser(@CurrentUser() user: any) {
-    console.log('controller', user);
     return this.loginUseCase.validateUserForJWTStragtegy(user.userId);
     //return user;
   }

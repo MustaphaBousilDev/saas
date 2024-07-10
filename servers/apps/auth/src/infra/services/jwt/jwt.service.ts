@@ -1,6 +1,6 @@
 import { JwtService } from '@nestjs/jwt';
 import { IJwtService, IJwtServicePayload } from '@app/domain';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -23,7 +23,28 @@ export class JwtTokenService implements IJwtService {
       if (error.name === 'TokenExpiredError') {
         throw new Error('Token expired'); // Handle token expiration separately
       }
-      throw new Error('Token invalid'); // Handle other errors (e.g., invalid token)
+      throw new UnauthorizedException('Token invalid'); // Handle other errors (e.g., invalid token)
+    }
+  }
+
+  async refreshToken(refreshToken: string): Promise<string> {
+    console.log('refresh Token', refreshToken);
+    try {
+      const payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      });
+      console.log('paylodddd');
+      console.log(payload);
+      const newAccessToken = await this.jwtService.sign(
+        { userId: payload.userId },
+        {
+          secret: this.configService.get<string>('JWT_SECRET'),
+          expiresIn: this.configService.get<string>('JWT_EXPIRES_IN'),
+        },
+      );
+      return newAccessToken;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
     }
   }
 

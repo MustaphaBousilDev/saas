@@ -27,7 +27,6 @@ export class VerifyUseCases {
     try {
       const result = await dataSource.query(`
           SELECT current_schema(), current_setting('search_path');`);
-      console.log(result);
     } catch (error) {
       console.error('Error fetching current schema information:', error);
     }

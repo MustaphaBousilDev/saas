@@ -17,7 +17,6 @@ export class LocalAuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     //const { email, password } = request.body;
     const loginDto = plainToInstance(LoginDTO, request.body);
-    console.log('login DTO', loginDto);
     const errors = await validate(loginDto);
 
     if (errors.length > 0) {

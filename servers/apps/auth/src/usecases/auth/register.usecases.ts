@@ -35,7 +35,6 @@ export class RegisterUseCases {
   async rateLimiting(ip: string) {
     const allowed = await this.rateLimiter.consume(ip);
     if (allowed) {
-      //console.log('this route is rate limited Register (Success)');
       return 'This route is rate limeted ';
     } else {
       throw new BadRequestException('rate limited exceeded Register (Failed)');

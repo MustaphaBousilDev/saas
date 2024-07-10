@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { TokenPayload } from './domain'; 
+import { TokenPayload } from './domain';
 import { UserInfoDto } from '@app/shared/dto/userInfo.dto';
 
 @Injectable()
@@ -15,7 +15,6 @@ export class AuthService {
     return 'Hello World!';
   }
   async login(user: UserInfoDto, response: Response) {
-    console.log('##----login', user);
     const tokenPayload: TokenPayload = {
       userId: user._id,
     };
@@ -24,7 +23,6 @@ export class AuthService {
       expires.getSeconds() + this.configService.get('JWT_EXPIRATION'),
     );
     const token = this.jwtService.sign(tokenPayload);
-    console.log('token', token);
     response.cookie('Authentication', token, {
       httpOnly: true,
       expires,

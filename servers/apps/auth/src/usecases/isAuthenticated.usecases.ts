@@ -6,7 +6,6 @@ export class IsAuthenticatedUseCases {
   async execute(userId: number): Promise<UserWithoutPassword> {
     const user: UserM = await this.adminUserRepo.getUserByUsername(userId);
     const { password, ...info } = user;
-    console.log(password);
     return info;
   }
 }

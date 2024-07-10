@@ -16,7 +16,7 @@ export class EnvironmentConfigService implements DatabaseConfig, JWTConfig {
   }
 
   getJwtRefreshSecret(): string {
-    return this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET');
+    return this.configService.get<string>('JWT_SECRET');
   }
 
   getJwtRefreshExpirationTime(): string {

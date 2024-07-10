@@ -17,7 +17,6 @@ export class AuthControllers {
     @CurrentUser() user: UserInfoDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    console.log('####------------------controller', user);
     const token = await this.authService.login(user, response);
     user['token'] = token;
     response.send(user);
@@ -26,8 +25,6 @@ export class AuthControllers {
   @UseGuards(JwtAuthGuard)
   @MessagePattern('authenticate')
   async authenticate(@Payload() data: any) {
-    console.log('############################');
-    console.log(data);
     return data.user;
   }
 

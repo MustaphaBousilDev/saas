@@ -14,9 +14,7 @@ export class ProfileUseCases {
     private readonly userRepository: UserRepositorySQL,
     private readonly bcryptService: BcryptService,
     private readonly rateLimiter: RateLimiterService,
-  ) {
-    console.log('in construct login');
-  }
+  ) {}
 
   async rateLimiting(ip: string) {
     const allowed = await this.rateLimiter.consume(ip);

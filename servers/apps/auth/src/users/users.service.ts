@@ -35,8 +35,6 @@ export class UsersService {
     private readonly createUserStock: ClientProxy,*/
   ) {}
   async create(createUserDto: CreateUserDto) {
-    console.log('services');
-    console.log(createUserDto);
     await this.validateCreateUserDto(createUserDto);
     const user = new User({
       ...createUserDto,
@@ -44,7 +42,6 @@ export class UsersService {
       roles: createUserDto.roles?.map((roleDto) => new Role(roleDto)),
     });
     //const promises = [];
-    console.log('user Service (((----', user);
     /*promises.push(
       this.createUserReservation
         .send('createUserResr', {
@@ -62,7 +59,6 @@ export class UsersService {
         })
         .toPromise(),
     );
-    console.log('#### hhhhhhhhhhhhhhhhhhhhhhhh');
     await Promise.all(promises);*/
     /*this.createUserOrganization.emit('createUserComminicate', {
       ...createUserDto,
@@ -88,14 +84,10 @@ export class UsersService {
   }
   async verifyUser(email: string, password: string) {
     const user = await this.usersRepository.findOne({ email });
-    console.log(user);
     const passwordIsValid = await bcrypt.compare(password, user.password);
     if (!passwordIsValid) {
       throw new UnauthorizedException('Invalid credentialss');
     }
-    console.log('-----------------------------------------------------\n');
-    console.log('--------------------------verify user \n');
-    console.log('-----------------------------------------------------\n');
     //user.password = 'bitch local strategy';
     return user;
   }
