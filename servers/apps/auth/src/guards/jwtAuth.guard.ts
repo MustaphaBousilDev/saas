@@ -5,7 +5,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtTokenService } from '@app/infra/services/jwt/jwt.service';
-import { cp } from 'fs';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -36,7 +35,6 @@ export class JwtAuthGuard implements CanActivate {
           const newAccessToken =
             await this.jwtService.refreshToken(refreshToken);
           request.headers['Authorization'] = `${newAccessToken}`;
-          console.log('heading', request.headers['Authorization']);
           const newPayload = await this.jwtService.checkToken(
             request.headers['Authorization'],
           );
@@ -47,7 +45,6 @@ export class JwtAuthGuard implements CanActivate {
         }
       }
       throw new UnauthorizedException('Invalid token');
-      //throw new UnauthorizedException('Invalid Token');
     }
   }
 

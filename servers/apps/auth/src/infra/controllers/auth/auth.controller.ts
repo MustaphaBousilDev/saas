@@ -68,10 +68,6 @@ export class AuthController {
         response.user._id,
       );
     res.setHeader('Set-Cookie', [accessTokenCookie, refreshTokenCookie.cookie]);
-    await this.registerUseCase.setCurrentRefreshTokenDB(
-      refreshTokenCookie.token,
-      response.user._id,
-    );
     return 'Register succesful';
   }
   @Post('/logout')

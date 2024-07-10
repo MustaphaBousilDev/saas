@@ -76,6 +76,7 @@ export class LoginUseCases {
     if (user && match) {
       //await this.updateLoginTime(user._id);
       const { password, ...result } = user;
+      console.log(password);
       return result;
     }
     //return 'Email or Password Incorrect';
@@ -96,6 +97,7 @@ export class LoginUseCases {
 
   async updateLoginTime(userId: number) {
     /*wait this.userRepository.updateLastLogin(userId);*/
+    console.log(userId);
   }
 
   async setCurrentRefreshTokenDB(refreshToken: string, userId: number) {
@@ -108,6 +110,7 @@ export class LoginUseCases {
   }
 
   async getUserIfRefreshTokenMatches(refreshToken: string, userId: number) {
+    console.log(refreshToken, userId);
     /*const user = await this.userRepository.getUserByUsername(userId);
     if (!user) {
       return null;
