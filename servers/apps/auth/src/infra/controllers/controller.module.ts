@@ -8,6 +8,7 @@ import { PermissionController } from './permissions';
 import { UserController } from './user';
 import { ResourceController } from './resources';
 import { PolicyController } from './policies';
+import { IAMController } from './iam/iam.controller';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { PolicyController } from './policies';
     UserController,
     ResourceController,
     PolicyController,
+    IAMController,
   ],
   providers: [],
   exports: [],

@@ -1,19 +1,15 @@
 import { Expose } from 'class-transformer';
-import { Permission } from '@app/infra/persistences';
+import { Role_Has_Resource_Permission } from '@app/infra/persistences';
 
 export class IAMCreateOutputDTO {
   @Expose()
   readonly _id: number;
 
   @Expose()
-  readonly name: string;
+  message: string;
 
-  @Expose()
-  readonly status: boolean;
-
-  constructor(permission: Permission) {
-    this._id = permission._id;
-    this.name = permission.name;
-    this.status = permission.status;
+  constructor(resourceIAM: Role_Has_Resource_Permission) {
+    this._id = resourceIAM._id;
+    this.message = 'Success Creating this IAM ';
   }
 }

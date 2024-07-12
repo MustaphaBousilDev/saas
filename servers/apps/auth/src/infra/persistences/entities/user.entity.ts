@@ -111,6 +111,13 @@ export class UserAuth extends AbstractEntity<UserAuth> {
   })
   resource?: Resource[];
 
+  @OneToMany(() => Resource, (resource) => resource.user, {
+    cascade: true,
+    eager: true,
+    nullable: true,
+  })
+  resourceCreated?: Resource[];
+
   @OneToMany(() => Role, (role) => role.user, {
     cascade: true,
     nullable: true,

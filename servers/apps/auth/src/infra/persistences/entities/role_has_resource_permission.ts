@@ -19,6 +19,12 @@ export class Role_Has_Resource_Permission extends AbstractEntity<Role_Has_Resour
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
+  @Column({ type: 'timestamp', default: null })
+  updatedAt: Date;
+
+  @Column({ type: 'timestamp', default: null })
+  deletedAt: Date;
+
   @ManyToOne(() => UserAuth, (user) => user.resource, {
     nullable: true,
     orphanedRowAction: 'delete',
@@ -54,4 +60,12 @@ export class Role_Has_Resource_Permission extends AbstractEntity<Role_Has_Resour
     onUpdate: 'CASCADE',
   })
   resource: Resource;
+
+  @ManyToOne(() => UserAuth, (user) => user.resourceCreated, {
+    nullable: true,
+    orphanedRowAction: 'delete',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  userCreated: UserAuth;
 }

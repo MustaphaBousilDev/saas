@@ -42,6 +42,14 @@ import {
   PolicyPatchUseCases,
   PolicyUpdateUseCases,
 } from './policies';
+import {
+  IAMAllUseCases,
+  IAMCreateUseCases,
+  IAMDeleteUseCases,
+  IAMGetUseCases,
+  IAMPatchUseCases,
+  IAMUpdateUseCases,
+} from './iam';
 
 @Module({
   imports: [
@@ -89,6 +97,13 @@ import {
     PolicyGetUseCases,
     PolicyUpdateUseCases,
     PolicyPatchUseCases,
+    //iam
+    IAMAllUseCases,
+    IAMCreateUseCases,
+    IAMDeleteUseCases,
+    IAMGetUseCases,
+    IAMUpdateUseCases,
+    IAMPatchUseCases,
   ],
   providers: [
     //auth
@@ -123,6 +138,13 @@ import {
     PolicyGetUseCases,
     PolicyUpdateUseCases,
     PolicyPatchUseCases,
+    //iam
+    IAMAllUseCases,
+    IAMCreateUseCases,
+    IAMDeleteUseCases,
+    IAMGetUseCases,
+    IAMUpdateUseCases,
+    IAMPatchUseCases,
   ],
 })
 export class UseCasesModule {}

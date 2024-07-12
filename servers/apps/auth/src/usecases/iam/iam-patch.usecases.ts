@@ -88,7 +88,7 @@ export class IAMPatchUseCases {
   async updatePermission(
     name: string,
     userId: number,
-    roleDTO: IAMUpdateInputDTO,
+    roleDTO: any,
   ) {
     try {
       const getPermission = await this.verifyPermissionByName(name);

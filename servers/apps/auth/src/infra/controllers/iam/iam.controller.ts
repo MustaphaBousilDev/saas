@@ -1,20 +1,24 @@
 import { IJwtServicePayload } from '@app/domain';
 import { CurrentUser } from '@app/shared';
 import {
-  PermissionAllUseCases,
+  IAMAllUseCases,
+  IAMCreateInputDTO,
+  IAMCreateOutputDTO,
+  IAMCreateUseCases,
+  IAMDeleteUseCases,
+  IAMGetUseCases,
+  IAMPatchUseCases,
+  IAMUpdateUseCases,
+} from '@app/useCases/iam';
+import {
   PermissionCreateInputDTO,
   PermissionCreateOutputDTO,
-  PermissionCreateUseCases,
   PermissionDeleteOutputDTO,
-  PermissionDeleteUseCases,
   PermissionFilterDTO,
   PermissionFindOutputDTO,
   PermissionGetAllOutputDTO,
-  PermissionGetUseCases,
-  PermissionPatchUseCases,
   PermissionUpdateInputDTO,
   PermissionUpdateOutputDTO,
-  PermissionUpdateUseCases,
 } from '@app/useCases/permission';
 import {
   Body,
@@ -30,51 +34,39 @@ import {
   Param,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'apps/auth/src/guards/jwtAuth.guard';
-@Controller('api/v1/iam/permission')
+@Controller('api/v1/iam')
 export class IAMController {
   constructor(
-    private readonly permissionAll: PermissionAllUseCases,
-    private readonly permissionCreate: PermissionCreateUseCases,
-    private readonly permissionDelete: PermissionDeleteUseCases,
-    private readonly permissionGet: PermissionGetUseCases,
-    private readonly permissionUpdate: PermissionUpdateUseCases,
-    private readonly permissionPatch: PermissionPatchUseCases,
+    private readonly iamAll: IAMAllUseCases,
+    private readonly iamCreate: IAMCreateUseCases,
+    private readonly iamDelete: IAMDeleteUseCases,
+    private readonly iamGet: IAMGetUseCases,
+    private readonly iamUpdate: IAMUpdateUseCases,
+    private readonly iamPatch: IAMPatchUseCases,
   ) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  async createPermission(
+  async createIAM(
     @Request() request: any,
-    @Body() permissionDTO: PermissionCreateInputDTO,
+    @Body() iamDTO: IAMCreateInputDTO,
     @CurrentUser() user: IJwtServicePayload,
-  ): Promise<PermissionCreateOutputDTO> {
+  ): Promise<IAMCreateOutputDTO | any> {
     const ip = request.ip;
-    await this.permissionCreate.rateLimiting(ip);
-    await this.permissionCreate.checkPermissionByName(permissionDTO.name);
-    const roleResponse = await this.permissionCreate.createPermission(
-      permissionDTO,
-      user.userId,
-    );
-
-    return new PermissionCreateOutputDTO(roleResponse);
+    console.log('controller', user);
+    await this.iamCreate.rateLimiting(ip);
+    const create = await this.iamCreate.createIAM(iamDTO, user.userId);
+    return create;
+    //return new IAMCreateOutputDTO(create);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/:permission')
+  @Get('/:iam')
   async getPermission(
     @Param('permission') permission: string,
     @Request() request: any,
   ) {
     console.log('permission', permission);
-    try {
-      const ip = request.ip;
-      await this.permissionGet.rateLimiting(ip);
-      const roleResponse = await this.permissionGet.getPermission(permission);
-
-      return new PermissionFindOutputDTO(roleResponse);
-    } catch (error) {
-      throw error;
-    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -83,74 +75,33 @@ export class IAMController {
     @Request() request: any,
     @Query() filterDto: PermissionFilterDTO,
   ) {
-    const ip = request.ip;
-    await this.permissionAll.rateLimiting(ip);
-    const permissions = await this.permissionAll.getAllPermissions(filterDto);
-    console.log('all permission', permissions);
-
-    return PermissionGetAllOutputDTO.fromPermission(permissions);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put('/:permission')
+  @Put('/:iam')
   async updatePermission(
     @Request() request: any,
     @Body() permissionDTO: PermissionCreateInputDTO,
     @CurrentUser() user: any,
     @Param('permission') permission: string,
   ) {
-    const ip = request.ip;
-    await this.permissionUpdate.rateLimiting(ip);
-    await this.permissionUpdate.checkPermissionByName(permissionDTO.name);
-    await this.permissionUpdate.updatePermission(
-      permission,
-      user.userId,
-      permissionDTO,
-    );
-    const newPermission = await this.permissionUpdate.verifyPermissionByName(
-      permissionDTO.name,
-    );
-    return new PermissionUpdateOutputDTO(newPermission);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('/:permission')
+  @Patch('/:iam')
   async updatePartialPermission(
     @Request() request: any,
     @Body() permissionDTO: PermissionUpdateInputDTO,
     @CurrentUser() user: any,
     @Param('permission') permission: string,
   ) {
-    const ip = request.ip;
-    await this.permissionPatch.rateLimiting(ip);
-    if (permissionDTO.name) {
-      await this.permissionPatch.checkPermissionByName(permissionDTO.name);
-    }
-    await this.permissionPatch.updatePermission(
-      permission,
-      user.userId,
-      permissionDTO,
-    );
-    if (permissionDTO.name) {
-      const newPermission = await this.permissionPatch.verifyPermissionByName(
-        permissionDTO.name,
-      );
-      return new PermissionUpdateOutputDTO(newPermission);
-    }
-    return 'Success Update Partial';
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('/:permission')
+  @Delete('/:iam')
   async deletePermission(
     @Request() request: any,
     @Param('permission') permission: string,
   ) {
-    const ip = request.ip;
-    await this.permissionDelete.rateLimiting(ip);
-    const permissionInfo =
-      await this.permissionDelete.checkPermission(permission);
-    await this.permissionDelete.deletePermission(permission);
-    return new PermissionDeleteOutputDTO(permissionInfo);
   }
 }
