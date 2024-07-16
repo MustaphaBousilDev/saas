@@ -46,7 +46,7 @@ export abstract class AbstractRepositorymySQL<T extends AbstractEntity<T>> {
           'Document was not found with filterQuery',
           JSON.stringify(where),
         );
-        throw new NotFoundException('Entity was not found');
+        return null;
       }
       this.logger.debug('Entity Found:', entity);
       return entity;
@@ -125,5 +125,16 @@ export abstract class AbstractRepositorymySQL<T extends AbstractEntity<T>> {
 
   async findMany(options?: FindManyOptions<T>): Promise<T[]> {
     return this.entityRepository.find(options);
+  }
+
+  // Create multiple entities
+  async createMany(entities: T[]): Promise<T[]> {
+    try {
+      const savedEntities = await this.entityManager.save(entities);
+      return savedEntities;
+    } catch (error) {
+      this.logger.error('Error creating entities', error);
+      throw new InternalServerErrorException('Error creating entities');
+    }
   }
 }
