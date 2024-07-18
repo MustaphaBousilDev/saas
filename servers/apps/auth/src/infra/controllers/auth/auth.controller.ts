@@ -36,6 +36,7 @@ export class AuthController {
     const accessTokenCookie = await this.loginUseCase.getCookieWithJwtToken(
       user._id,
     );
+    console.log('access Token Cookies', accessTokenCookie);
     const refreshTokenCookie =
       await this.loginUseCase.getCookieWithJwtRefreshToken(user?._id);
     response.setHeader('Set-Cookie', [

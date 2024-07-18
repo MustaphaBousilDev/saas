@@ -186,93 +186,6 @@ export class IAMCreateUseCases {
       throw new NotFoundException('Permission not found');
     }
   }
-  /*async createIAM(createIAM: IAMCreateInputDTO, userId: number) {
-    const { userId: UserID, roles: rolesDTO, ...IAMDTO } = createIAM;
-    console.log(UserID, rolesDTO);
-    try {
-      //check user is exist in users table
-      const user = await this.getUser(createIAM.userId);
-      //console.log('user', user);
-      //check user is exist in IAM
-      const userIAM = await this.iamRepository.findOne({
-        user: user,
-      });
-      //console.log('userIAM', userIAM);
-      if (userIAM) {
-        throw new Error(
-          'User is Already Exist in IAM , You cant create other permission',
-        );
-      }
-      //const userCreated = await this.getUser(userId);
-      const rolesList = createIAM.roles.map((role) => role.name);
-      const resourceList = createIAM.roles.flatMap((role) =>
-        role.resources.map((resource) => resource.name),
-      );
-      const permissionList = Array.from(
-        new Set(
-          createIAM.roles.flatMap((role) =>
-            role.resources.flatMap((resource) => resource.permissions),
-          ),
-        ),
-      );
-      const [rolesR, resourcesR, permissionsR, userCreated] = await Promise.all(
-        [
-          this.roleRepository.findMany({ where: { name: In(rolesList) } }),
-          this.resourceRepository.findMany({
-            where: { name: In(resourceList) },
-          }),
-          this.permissionRepository.findMany({
-            where: { name: In(permissionList) },
-          }),
-          this.userRepository.findOne({ _id: userId }),
-        ],
-      );
-      if (!rolesR.length) {
-        throw new Error('Failed to get RolesList');
-      }
-      if (!resourcesR.length) {
-        throw new Error('Failed to get ResourceList');
-      }
-      if (!permissionsR.length) {
-        throw new Error('Failed to get PermissionList');
-      }
-      if (!user) {
-        throw new Error('Failed to get User Assigned');
-      }
-      //map
-      createIAM.roles.map(async (role) => {
-        const rol = await this.roleRepository.findOne({
-          name: role.name,
-        });
-        role.resources.map(async (resource) => {
-          const reso = await this.resourceRepository.findOne({
-            name: resource.name,
-          });
-          resource.permissions.map(async (permission) => {
-            const per = await this.permissionRepository.findOne({
-              name: permission,
-            });
-            const saved = new Role_Has_Resource_Permission({
-              ...IAMDTO,
-              user: userCreated,
-              userCreated: user,
-              resource: reso,
-              permission: per,
-              role: rol,
-            });
-            await this.iamRepository.create(saved);
-          });
-        });
-      });
-    } catch (error) {
-      this.logger.error(
-        'Error creating IAM',
-        `Error occurred while creating IAM: ${error.message}`,
-      );
-      throw new BadRequestException('Failed to create IAM');
-    }
-  }*/
-
   async createIAM(createIAM: IAMCreateInputDTO, userId: number) {
     const { userId: UserID, roles: rolesDTO, ...IAMDTO } = createIAM;
     console.log(UserID, rolesDTO);
@@ -284,10 +197,12 @@ export class IAMCreateUseCases {
       }
       // Check if user exists in IAM
       const userIAM = await this.iamRepository.findOne({ user });
+      console.log(userIAM);
+      return;
       if (userIAM) {
-        throw new Error(
-          'User already exists in IAM, cannot create other permission',
-        );
+        console.log('error', userIAM);
+        throw new Error('User already exists in IAM, cannot create other iam');
+        return;
       }
       const rolesList = rolesDTO.map((role) => role.name);
       const resourceList = rolesDTO.flatMap((role) =>
@@ -346,7 +261,8 @@ export class IAMCreateUseCases {
           });
         });
       });
-      await this.iamRepository.createMany(iamEntities);
+      const result = await this.iamRepository.createMany(iamEntities);
+      return result;
     } catch (error) {
       this.logger.error(
         'Error creating IAM',

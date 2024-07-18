@@ -8,15 +8,15 @@ import { Transport } from '@nestjs/microservices';
 async function bootstrap() {
   const app = await NestFactory.create(TasksModule);
   const configService = app.get(ConfigService);
-  app.connectMicroservice({
+  /*app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
       urls: [configService.getOrThrow('RABBITMQ_URI')],
       queue: 'tasks',
     },
-  });
+  });*/
   app.useLogger(app.get(Logger));
-  await app.startAllMicroservices();
+  //await app.startAllMicroservices();
   app.use(cookieParser());
   await app.listen(configService.get('PORT'));
 }

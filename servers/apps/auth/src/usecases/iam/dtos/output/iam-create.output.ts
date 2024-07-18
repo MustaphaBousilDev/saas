@@ -12,4 +12,8 @@ export class IAMCreateOutputDTO {
     this._id = resourceIAM._id;
     this.message = 'Success Creating this IAM ';
   }
+
+  static fromIAM(iam: Role_Has_Resource_Permission[]): IAMCreateOutputDTO[] {
+    return iam.map((im) => new IAMCreateOutputDTO(im));
+  }
 }

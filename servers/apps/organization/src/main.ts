@@ -13,16 +13,16 @@ async function bootstrap() {
   // Parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: true }));
   const configService = app.get(ConfigService);
-  app.connectMicroservice({
+  /*app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
       urls: [configService.getOrThrow('RABBITMQ_URI')],
       queue: 'organization',
     },
-  });
+  });*/
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useLogger(app.get(Logger));
-  await app.startAllMicroservices();
+  //await app.startAllMicroservices();
   app.use(cookieParser());
   await app.listen(configService.get('PORT'));
 }

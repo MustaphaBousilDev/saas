@@ -7,15 +7,15 @@ import { Logger } from 'nestjs-pino';
 async function bootstrap() {
   const app = await NestFactory.create(S3Module);
   const configService = app.get(ConfigService);
-  app.connectMicroservice({
+  /*app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
       urls: [configService.getOrThrow('RABBITMQ_URI')],
       queue: 's3',
     },
-  });
+  });*/
   app.useLogger(app.get(Logger));
-  await app.startAllMicroservices();
+  //await app.startAllMicroservices();
   await app.listen(configService.getOrThrow('PORT'));
 }
 bootstrap();

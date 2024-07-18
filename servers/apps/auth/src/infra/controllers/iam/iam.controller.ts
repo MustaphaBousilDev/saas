@@ -53,11 +53,9 @@ export class IAMController {
     @CurrentUser() user: IJwtServicePayload,
   ): Promise<IAMCreateOutputDTO | any> {
     const ip = request.ip;
-    console.log('controller', user);
     await this.iamCreate.rateLimiting(ip);
     const create = await this.iamCreate.createIAM(iamDTO, user.userId);
-    return create;
-    //return new IAMCreateOutputDTO(create);
+    return IAMCreateOutputDTO.fromIAM(create);
   }
 
   @UseGuards(JwtAuthGuard)

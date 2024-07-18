@@ -8,15 +8,15 @@ import * as cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(StockModule);
   const configService = await app.get(ConfigService);
-  app.connectMicroservice({
+  /*app.connectMicroservice({
     transport: Transport.RMQ,
     options: {
       urls: [configService.getOrThrow('RABBITMQ_URI')],
       queue: 'stock',
     },
-  });
+  });*/
   app.useLogger(app.get(Logger));
-  await app.startAllMicroservices();
+  //await app.startAllMicroservices();
   app.use(cookieParser());
   await app.listen(configService.getOrThrow('PORT'));
 }
