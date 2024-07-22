@@ -1,8 +1,9 @@
 import { AbstractEntity } from '@app/shared';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 
 @Entity()
 export class RefreshToken extends AbstractEntity<RefreshToken> {
+  @Index({ unique: true })
   @Column({ type: 'text' })
   refreshToken: string;
 

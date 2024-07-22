@@ -58,7 +58,7 @@ export class PolicyCreateUseCases {
     const policy = await this.policyRepository.find({
       policyName,
     });
-    if (policy.length > 0) {
+    if (policy && policy.length > 0) {
       this.logger.warn(
         'Duplicate policy name',
         `Policy with name '${policyName}' already exists while trying to create a new policy`,

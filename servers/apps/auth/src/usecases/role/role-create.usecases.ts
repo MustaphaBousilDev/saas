@@ -58,14 +58,16 @@ export class RoleCreateUseCases {
   async checkRoleByName(name: string) {
     const role = await this.roleRepository.find({ name });
     console.log('this is role');
-    console.log(role.length);
-    if (role.length > 0) {
+    //console.log(role.length);
+    if (role && role.length > 0) {
+      console.log('not enter');
       this.logger.warn(
         'Duplicate role name',
         `Role with name '${name}' already exists while trying to create a new role`,
       );
       throw new NotFoundException(`Role with name '${name}' already exists`);
     }
+    console.log('success not find role');
   }
 
   async createRole(roleDTO: RoleCreateInputDTO, userId: number): Promise<Role> {

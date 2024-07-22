@@ -1,10 +1,11 @@
 import { AbstractEntity } from '@app/shared';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, OneToMany } from 'typeorm';
 import { Role_Has_Resource_Permission } from './role_has_resource_permission';
 import { UserAuth } from './user.entity';
 
 @Entity()
 export class Role extends AbstractEntity<Role> {
+  @Index({ unique: true })
   @Column({ type: 'varchar', unique: true })
   name: string;
 

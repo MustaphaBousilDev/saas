@@ -1,11 +1,8 @@
 import { LoggerService } from '@app/infra/logger/logger.service';
 import {
-  Permission,
   PermissionRepositorySQL,
-  Resource,
   ResourceRepositorySQL,
   ResourceRolePermessionRepositorySQL,
-  Role,
   Role_Has_Resource_Permission,
   RoleRepositorySQL,
   UserAuth,
@@ -70,122 +67,6 @@ export class IAMCreateUseCases {
     }
   }
 
-  async checkUserExist(userId: number) {
-    try {
-      const user = await this.userRepository.findOne({ _id: userId });
-      if (user) {
-        this.logger.warn(
-          'User not found',
-          `User with this ID ${userId} not found while fetching in RoleCreateUseCases`,
-        );
-        throw new BadRequestException('This User Exist');
-      }
-      return true;
-    } catch (error) {
-      this.logger.error(
-        'Error fetching user',
-        `Error occurred while fetching user with ID ${userId}: ${error.message}`,
-      );
-      throw new NotFoundException('User not found');
-    }
-  }
-
-  async checkPermissionByName(name: string) {
-    const permission = await this.permissionRepository.find({ name });
-    if (permission.length > 0) {
-      this.logger.warn(
-        'Duplicate ropermission  name',
-        `permission with name '${name}' already exists while trying to create a new permission`,
-      );
-      throw new NotFoundException(`
-        permission with name '${name}' already exists`);
-    }
-  }
-
-  async createPermission(
-    permissionDTO: any,
-    userId: number,
-  ): Promise<Permission> {
-    const user = await this.getUser(userId);
-    const permission = new Permission({
-      ...permissionDTO,
-      user: user,
-    });
-    try {
-      const newPermission = await this.permissionRepository.create(permission);
-      this.logger.log(
-        'Permission created succesfully',
-        `Permission '${permissionDTO.name}' created successfully with ID: ${newPermission._id} in Date: ${newPermission.createdAt}`,
-      );
-      return newPermission;
-    } catch (error) {
-      this.logger.error(
-        'Error creating permission',
-        `Error occurred while creating permission: ${error.message}`,
-      );
-      throw new BadRequestException('Failed to create permission');
-    }
-  }
-
-  async getRole(roleId: number): Promise<Role | any> {
-    try {
-      const role = await this.roleRepository.findOne({ _id: roleId });
-      if (!role) {
-        this.logger.warn(
-          'Role not Found',
-          `Role with this ID: ${roleId} does not exist`,
-        );
-        throw new NotFoundException('Role Not found');
-      }
-      return role;
-    } catch (error) {
-      this.logger.error(
-        'Error fetching role',
-        `Error occurred while fetching role with ID ${roleId}: ${error.message}`,
-      );
-      throw new NotFoundException('Role not found');
-    }
-  }
-  async getResource(resourceId: number): Promise<Resource | any> {
-    try {
-      const resource = await this.resourceRepository.findOne({
-        _id: resourceId,
-      });
-      if (!resource) {
-        this.logger.warn(
-          'Resourec not Found',
-          `Resource with this ID: ${resourceId} does not exist`,
-        );
-      }
-      return resource;
-    } catch (error) {
-      this.logger.error(
-        'Error fetching resource',
-        `Error occurred while fetching resource with ID ${resourceId}: ${error.message}`,
-      );
-      throw new NotFoundException('Resource not found');
-    }
-  }
-  async getPermission(permissionId: number): Promise<Resource | any> {
-    try {
-      const permission = await this.permissionRepository.findOne({
-        _id: permissionId,
-      });
-      if (!permission) {
-        this.logger.warn(
-          'Resourec not Found',
-          `Resource with this ID: ${permissionId} does not exist`,
-        );
-      }
-      return permission;
-    } catch (error) {
-      this.logger.error(
-        'Error fetching permission',
-        `Error occurred while fetching permission with ID ${permissionId}: ${error.message}`,
-      );
-      throw new NotFoundException('Permission not found');
-    }
-  }
   async createIAM(createIAM: IAMCreateInputDTO, userId: number) {
     const { userId: UserID, roles: rolesDTO, ...IAMDTO } = createIAM;
     console.log(UserID, rolesDTO);
@@ -194,15 +75,6 @@ export class IAMCreateUseCases {
       const user = await this.getUser(createIAM.userId);
       if (!user) {
         throw new Error('User does not exist');
-      }
-      // Check if user exists in IAM
-      const userIAM = await this.iamRepository.findOne({ user });
-      console.log(userIAM);
-      return;
-      if (userIAM) {
-        console.log('error', userIAM);
-        throw new Error('User already exists in IAM, cannot create other iam');
-        return;
       }
       const rolesList = rolesDTO.map((role) => role.name);
       const resourceList = rolesDTO.flatMap((role) =>
@@ -252,7 +124,7 @@ export class IAMCreateUseCases {
             const iamEntity = new Role_Has_Resource_Permission({
               ...IAMDTO,
               user: userCreated,
-              userCreated: user,
+              usercreated: user,
               resource,
               permission,
               role,
@@ -261,6 +133,7 @@ export class IAMCreateUseCases {
           });
         });
       });
+      console.log('here in final');
       const result = await this.iamRepository.createMany(iamEntities);
       return result;
     } catch (error) {
@@ -269,6 +142,38 @@ export class IAMCreateUseCases {
         `Error occurred while creating IAM: ${error.message}`,
       );
       throw new BadRequestException('Failed to create IAM');
+    }
+  }
+
+  async checkUserIfExistinIAMResource(
+    userId: number,
+    idTenant: string,
+  ): Promise<UserAuth | UserAuth[] | void> {
+    try {
+      console.log('tototo', userId);
+      const user = await this.iamRepository.findOneNative(userId, idTenant);
+      const userTest = await this.userRepository.findOneQueryBuilder(
+        { _id: userId },
+        null,
+        ['_id', 'email', 'password'],
+      );
+      console.log('user', user);
+      const userIAM = await this.iamRepository.findManyByUserIdsQueryBuilder(
+        [userId],
+        null,
+        ['_id'],
+      );
+      console.log('userIAM', userIAM);
+      if (userIAM && userIAM.length > 0) {
+        this.logger.warn(
+          'User Exist in the database',
+          `Ùser with id ${userId} found in the database`,
+        );
+        throw new BadRequestException('User exist!');
+      }
+      return user;
+    } catch (err) {
+      throw new BadRequestException('User Already Has own resource');
     }
   }
 }

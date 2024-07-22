@@ -1,5 +1,5 @@
 import { AbstractEntity } from '@app/shared';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { UserAuth } from './user.entity';
 
 export enum PolicyCategory {
@@ -15,6 +15,7 @@ export enum PolicyCategory {
 
 @Entity()
 export class Policies extends AbstractEntity<Policies> {
+  @Index({ unique: true })
   @Column({ type: 'varchar', unique: true })
   policyName: string;
 

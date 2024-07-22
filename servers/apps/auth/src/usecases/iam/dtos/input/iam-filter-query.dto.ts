@@ -3,10 +3,6 @@ import { IsOptional, IsString } from 'class-validator';
 export class IAMFilterDTO {
   @IsOptional()
   @IsString()
-  name?: string;
-
-  @IsOptional()
-  @IsString()
   status?: boolean;
 
   @IsOptional()

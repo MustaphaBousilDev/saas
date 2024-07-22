@@ -49,8 +49,10 @@ export class RoleController {
     @CurrentUser() user: IJwtServicePayload,
   ): Promise<RoleCreateOutputDTO> {
     const ip = request.ip;
+    console.log('roleDTO', roleDTO);
     await this.roleCreate.rateLimiting(ip);
-    await this.roleCreate.checkRoleByName(roleDTO.name);
+    const role = await this.roleCreate.checkRoleByName(roleDTO.name);
+    console.log('check role by name', role);
     const roleResponse = await this.roleCreate.createRole(roleDTO, user.userId);
 
     return new RoleCreateOutputDTO(roleResponse);

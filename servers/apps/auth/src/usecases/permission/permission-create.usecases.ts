@@ -57,7 +57,7 @@ export class PermissionCreateUseCases {
 
   async checkPermissionByName(name: string) {
     const permission = await this.permissionRepository.find({ name });
-    if (permission.length > 0) {
+    if (permission && permission.length > 0) {
       this.logger.warn(
         'Duplicate ropermission  name',
         `permission with name '${name}' already exists while trying to create a new permission`,

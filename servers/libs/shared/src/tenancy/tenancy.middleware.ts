@@ -1,6 +1,6 @@
 import { NextFunction, Response } from 'express';
 
-const TENANT_HEADER = 'x-tenant-id';
+export const TENANT_HEADER = 'x-tenant-id';
 
 export function tenancyMiddleware(
   req: any,

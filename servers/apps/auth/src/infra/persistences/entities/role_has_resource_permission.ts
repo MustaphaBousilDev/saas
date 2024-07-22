@@ -13,7 +13,7 @@ export class Role_Has_Resource_Permission extends AbstractEntity<Role_Has_Resour
   @Column({ type: 'text' })
   description: string;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: true })
   isActivate: boolean;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -67,5 +67,5 @@ export class Role_Has_Resource_Permission extends AbstractEntity<Role_Has_Resour
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  userCreated: UserAuth;
+  usercreated: UserAuth;
 }

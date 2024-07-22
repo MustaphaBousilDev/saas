@@ -56,7 +56,7 @@ export class ResourceCreateUseCases {
 
   async checkResourceByName(name: string) {
     const resource = await this.resourceRepository.find({ name });
-    if (resource.length > 0) {
+    if (resource && resource.length > 0) {
       this.logger.warn(
         'Duplicate resource name',
         `Resource with name '${name}' already exists while trying to create a new resource`,

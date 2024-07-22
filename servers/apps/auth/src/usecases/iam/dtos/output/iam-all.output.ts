@@ -1,48 +1,44 @@
-import { Permission } from '@app/infra/persistences';
-import { Expose } from 'class-transformer';
+// resource.dto.ts
+import { Expose, Type } from 'class-transformer';
+import { IsArray, IsString, ValidateNested } from 'class-validator';
 
-export class UserDTO {
+export class PermissionDTO {
   @Expose()
-  email: string;
-  @Expose()
-  username: string;
-
-  constructor(user: any) {
-    this.email = user.email;
-    this.username = user.username;
-  }
+  @IsString()
+  name: string;
 }
 
-export class IAMGetAllOutputDTO {
+export class ResourceDTO {
   @Expose()
-  readonly name: string;
-
-  @Expose()
-  readonly status: boolean;
+  @IsString()
+  name: string;
 
   @Expose()
-  readonly createdAt: Date;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PermissionDTO)
+  permissions: PermissionDTO[];
+}
+
+export class RoleDTO {
+  @Expose()
+  @IsString()
+  name: string;
 
   @Expose()
-  readonly updatedAt: Date;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ResourceDTO)
+  resources: ResourceDTO[];
+}
+
+export class IAMOutputAllDTO {
+  @Expose()
+  user_id: number;
 
   @Expose()
-  readonly deletedAt?: Date;
-
-  @Expose()
-  readonly userCreated?: UserDTO;
-
-  constructor(permission: Permission) {
-    this.name = permission.name;
-    this.status = permission.status;
-    this.createdAt = permission.createdAt;
-    this.updatedAt = permission.updatedAt;
-    this.userCreated = permission.user
-      ? new UserDTO(permission.user)
-      : undefined;
-  }
-
-  static fromPermission(permissions: Permission[]): IAMGetAllOutputDTO[] {
-    return permissions.map((permission) => new IAMGetAllOutputDTO(permission));
-  }
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => RoleDTO)
+  roles: RoleDTO[];
 }

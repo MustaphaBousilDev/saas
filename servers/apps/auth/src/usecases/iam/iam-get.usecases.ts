@@ -1,23 +1,19 @@
 import { LoggerService } from '@app/infra/logger/logger.service';
-import { Permission, PermissionRepositorySQL } from '@app/infra/persistences';
-import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.service';
 import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+  ResourceRolePermessionRepositorySQL,
+  Role_Has_Resource_Permission,
+} from '@app/infra/persistences';
+import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.service';
+import { BadRequestException, Injectable } from '@nestjs/common';
 //import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class IAMGetUseCases {
   constructor(
     private readonly logger: LoggerService,
-    private readonly permissionRepository: PermissionRepositorySQL,
+    private readonly iamRepository: ResourceRolePermessionRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
-  ) {
-    console.log('in construct login');
-  }
+  ) {}
 
   async rateLimiting(ip: string) {
     const allowed = await this.rateLimiter.consume(ip);
@@ -32,29 +28,20 @@ export class IAMGetUseCases {
     }
   }
 
-  async getPermission(roleName: string): Promise<Permission> {
+  async getIAMUser(
+    idTenant: string,
+    user_id: number,
+  ): Promise<Role_Has_Resource_Permission[] | any> {
     //const where: FindOptionsWhere<Permission> = { name: roleName };
     //where.name = roleName;
     try {
-      const permission = await this.permissionRepository.findOne(
-        { name: roleName },
-        { user: true },
+      const result = await this.iamRepository.findIAMUserGroupByUser(
+        idTenant,
+        user_id,
       );
-      if (!permission) {
-        this.logger.warn(
-          'Permission not found',
-          `Permission with name ${roleName} does not exist`,
-        );
-        throw new NotFoundException('Permission not found');
-      }
-      this.logger.log(
-        'Success Get Permission',
-        `Successfully found permission with name: ${roleName}`,
-      );
-      return permission;
-    } catch (err) {
-      this.logger.error('Error Find permission', `${err}`);
-      throw new InternalServerErrorException(`${err.message}`);
+      return result;
+    } catch (error) {
+      throw error;
     }
   }
 }

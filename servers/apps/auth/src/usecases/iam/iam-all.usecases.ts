@@ -1,21 +1,14 @@
 import { LoggerService } from '@app/infra/logger/logger.service';
-import {
-  Permission,
-  PermissionRepositorySQL,
-  Role,
-  UserRepositorySQL,
-} from '@app/infra/persistences';
+import { ResourceRolePermessionRepositorySQL } from '@app/infra/persistences';
 import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { IAMFilterDTO } from './dtos';
-import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class IAMAllUseCases {
   constructor(
     private readonly logger: LoggerService,
-    private readonly permissionRepository: PermissionRepositorySQL,
-    private readonly userRepository: UserRepositorySQL,
+    private readonly iamRepository: ResourceRolePermessionRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
   ) {
     console.log('in construct login');
@@ -33,32 +26,21 @@ export class IAMAllUseCases {
     }
   }
 
-  async getAllPermissions(filterDto: IAMFilterDTO): Promise<Permission[]> {
+  async getAllIAM(
+    filterDto: IAMFilterDTO,
+    req: any,
+    idTenant: string,
+  ): Promise<any> {
     try {
-      const { name, status, page, pageSize } = filterDto;
-      const where: FindOptionsWhere<Role> = {};
-      if (name) where.name = name;
-      if (status !== undefined) where.status = status;
-      const skip =
-        page && pageSize ? (parseInt(page) - 1) * pageSize : undefined;
-      const take = pageSize;
-      const permissions = await this.permissionRepository.find(
-        where,
-        { user: true },
-        skip,
-        take,
-      );
-      this.logger.log(
-        'Get Permissions are Succesfly',
-        `Getting All Permissions from the Database is done`,
-      );
-      return permissions;
+      const iamList =
+        await this.iamRepository.findAndGroupByRoleAndResource(idTenant);
+      return iamList;
     } catch (err) {
       this.logger.error(
-        'Error fetching permissions',
-        'Error when fetching Permissions from the database',
+        'Error fetching iam',
+        'Error when fetching IAM from the database',
       );
     }
-    throw new BadRequestException('Failed to fetch permissions');
+    throw new BadRequestException('Failed to fetch IAM');
   }
 }
