@@ -6,6 +6,7 @@ import {
   IAMCreateInputDTO,
   IAMCreateOutputDTO,
   IAMCreateUseCases,
+  IAMDeleteOutputDTO,
   IAMDeleteUseCases,
   IAMFilterDTO,
   IAMGetUseCases,
@@ -14,18 +15,11 @@ import {
   IAMUpdateUseCases,
 } from '@app/useCases/iam';
 import {
-  PermissionCreateInputDTO,
-  PermissionFilterDTO,
-  PermissionUpdateInputDTO,
-} from '@app/useCases/permission';
-import {
   Body,
   Controller,
   Delete,
   Get,
-  Patch,
   Post,
-  Put,
   Request,
   Query,
   UseGuards,
@@ -110,10 +104,15 @@ export class IAMController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete('/:iam')
-  async deleteIAMUser(@Request() request: any, @Param('iam') iam: string) {
+  @Delete('/:usr')
+  async deleteIAMUser(@Request() request: any, @Param('usr') usr: number) {
     const ip = request.ip;
-    const header = request.headers[TENANT_HEADER] as string;
-    await this.iamDelete.rateLimiting(ip);
+    try {
+      await this.iamDelete.rateLimiting(ip);
+      const result = await this.iamDelete.deleteIAM(usr);
+      return new IAMDeleteOutputDTO(result);
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -1,7 +1,7 @@
 import { LoggerService } from '@app/infra/logger/logger.service';
 import {
-  Permission,
-  PermissionRepositorySQL,
+  ResourceRolePermessionRepositorySQL,
+  UserAuth,
   UserRepositorySQL,
 } from '@app/infra/persistences';
 import { RateLimiterService } from '@app/infra/services/rate/rate-limiter.service';
@@ -15,7 +15,7 @@ import {
 export class IAMDeleteUseCases {
   constructor(
     private readonly logger: LoggerService,
-    private readonly permissionRepository: PermissionRepositorySQL,
+    private readonly iamRepository: ResourceRolePermessionRepositorySQL,
     private readonly userRepository: UserRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
   ) {}
@@ -33,7 +33,7 @@ export class IAMDeleteUseCases {
     }
   }
 
-  async checkPermission(name: string): Promise<Permission | any> {
+  /*async checkPermission(name: string): Promise<Permission | any> {
     try {
       const permission = await this.permissionRepository.find({ name });
       if (permission.length > 0) {
@@ -55,31 +55,34 @@ export class IAMDeleteUseCases {
       );
       throw new NotFoundException(`Permission Not found`);
     }
-  }
+  }*/
 
-  async deletePermission(name: string): Promise<string> {
+  async deleteIAM(userCreatedID: number): Promise<UserAuth> {
     try {
-      const result = await this.permissionRepository.findOneAndDelete({ name });
+      const user = await this.userRepository.findOne({ _id: userCreatedID });
+      const result = await this.iamRepository.findOneAndDelete({
+        usercreated: user,
+      });
       if (result.affected === 0) {
-        throw new NotFoundException('Permission not found');
+        throw new NotFoundException('IAM not found');
       }
       this.logger.log(
-        'Success Deleting Permission',
-        `Successfully deleted permission with name: ${name}`,
+        'Success Deleting IAM',
+        `Successfully deleted IAM From User with name: ${user.username}`,
       );
-      return name;
+      return user;
     } catch (error) {
       if (error instanceof NotFoundException) {
         this.logger.error(
-          'Error Deleting permission',
-          `Permission not found: ${name}`,
+          'Error Deleting IAM',
+          `IAM not found: ${error.message}`,
         );
         throw new BadRequestException(`
           Something went wrong, error: ${error.message}`);
       } else {
         this.logger.error(
-          'Error Deleting permission',
-          `Unexpected error while deleting permission: ${error.message}`,
+          'Error Deleting IAM',
+          `Unexpected error while deleting IAM: ${error.message}`,
         );
         throw new BadRequestException(`
           Something went wrong, error: ${error.message}`);

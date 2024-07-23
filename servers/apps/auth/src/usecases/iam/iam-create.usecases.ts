@@ -152,11 +152,6 @@ export class IAMCreateUseCases {
     try {
       console.log('tototo', userId);
       const user = await this.iamRepository.findOneNative(userId, idTenant);
-      const userTest = await this.userRepository.findOneQueryBuilder(
-        { _id: userId },
-        null,
-        ['_id', 'email', 'password'],
-      );
       console.log('user', user);
       const userIAM = await this.iamRepository.findManyByUserIdsQueryBuilder(
         [userId],
