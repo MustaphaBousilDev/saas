@@ -109,7 +109,8 @@ export class IAMController {
     const ip = request.ip;
     try {
       await this.iamDelete.rateLimiting(ip);
-      const result = await this.iamDelete.deleteIAM(usr);
+      const checkUser = await this.iamDelete.checkUser(usr);
+      const result = await this.iamDelete.deleteIAM(checkUser);
       return new IAMDeleteOutputDTO(result);
     } catch (error) {
       throw error;

@@ -56,10 +56,28 @@ export class IAMDeleteUseCases {
       throw new NotFoundException(`Permission Not found`);
     }
   }*/
-
-  async deleteIAM(userCreatedID: number): Promise<UserAuth> {
+  async checkUser(user_id: number): Promise<UserAuth> {
     try {
-      const user = await this.userRepository.findOne({ _id: userCreatedID });
+      const user = await this.userRepository.findOne({ _id: user_id });
+      if (user) {
+        this.logger.log(
+          'Success Found User',
+          `Success Found User with id: ${user_id} in Schema User`,
+        );
+        return user;
+      } else {
+        throw new NotFoundException('User Not Found In Schema User');
+      }
+    } catch (error) {
+      this.logger.error(
+        'Something wrong',
+        `Something wrong when i get User, error: ${error.message}`,
+      );
+      throw new BadRequestException(`Error: ${error.message}`);
+    }
+  }
+  async deleteIAM(user: UserAuth): Promise<UserAuth> {
+    try {
       const result = await this.iamRepository.findOneAndDelete({
         usercreated: user,
       });
