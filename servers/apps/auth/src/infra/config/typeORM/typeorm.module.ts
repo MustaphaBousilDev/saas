@@ -15,8 +15,9 @@ export const getTypeOrmModuleOptions = (
     password: config.get__PASSWORD_USER(),
     database: config.get__DB_PG(),
     synchronize: true,
-  } as TypeOrmModuleOptions,
-);
+  } as 
+  TypeOrmModuleOptions,
+);  
 
 @Module({
   imports: [

@@ -21,12 +21,10 @@ export class JwtAuthGuard implements CanActivate {
       request.user = payload;
       return true;
     } catch (error) {
-      console.log('fucking error', error.message);
       if (
         error instanceof UnauthorizedException &&
         error.message === 'Token invalid'
       ) {
-        console.log('tonen is expired, yesss bitch');
         const refreshToken = this.extractRefreshTokenFromHeader(request);
         if (!refreshToken) {
           throw new UnauthorizedException('Refresh token not found');

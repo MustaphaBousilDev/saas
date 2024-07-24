@@ -16,9 +16,7 @@ export class RoleAllUseCases {
     private readonly roleRepository: RoleRepositorySQL,
     private readonly userRepository: UserRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
-  ) {
-    console.log('in construct login');
-  }
+  ) {}
   async rateLimiting(ip: string) {
     const allowed = await this.rateLimiter.consume(ip);
     if (allowed) {
@@ -47,8 +45,6 @@ export class RoleAllUseCases {
         skip,
         take,
       );
-      console.log('this is roles');
-      console.log(roles);
       this.logger.log(
         'Get Roles are Succesfly',
         `Getting All Roles from the Database is done`,

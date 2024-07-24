@@ -36,7 +36,6 @@ export class PolicyDeleteUseCases {
   async checkPolicy(policyName: string): Promise<Policies | any> {
     try {
       const policy = await this.policyRepository.find({ policyName });
-      console.log('po', policy);
       if (policy.length > 0) {
         this.logger.log(
           'Success Find Policies',

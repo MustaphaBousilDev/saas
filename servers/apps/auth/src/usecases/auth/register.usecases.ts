@@ -29,7 +29,7 @@ export class RegisterUseCases {
           SELECT current_schema(), current_setting('search_path');`);
       console.log(result);
     } catch (error) {
-      console.error('Error fetching current schema information:', error);
+      throw error;
     }
   }
   async rateLimiting(ip: string) {

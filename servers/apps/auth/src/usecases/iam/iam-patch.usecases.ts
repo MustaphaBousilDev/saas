@@ -11,7 +11,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { IAMUpdateInputDTO } from './dtos';
 
 @Injectable()
 export class IAMPatchUseCases {

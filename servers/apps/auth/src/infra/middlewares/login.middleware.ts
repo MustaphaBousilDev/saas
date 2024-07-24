@@ -10,7 +10,6 @@ export class AuthMiddleware implements NestMiddleware {
     const token = req.cookies['Authentication'];
     if (token) {
       try {
-        console.log('success middleware');
         //const decoded = await this.jwtTokenService.checkToken(token);
         await this.jwtTokenService.checkToken(token);
         return res.status(403).json({ message: 'User is already logged in' });
@@ -25,7 +24,6 @@ export class AuthMiddleware implements NestMiddleware {
         }
       }
     } else {
-      console.log('fuck to tokne');
       // No token present, allow to proceed
       next();
     }

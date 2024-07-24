@@ -36,7 +36,6 @@ export class PermissionCreateUseCases {
   }
 
   async getUser(userId: number): Promise<UserAuth | any> {
-    console.log('hahahahahha');
     try {
       const user = await this.userRepository.findOne({ _id: userId });
       if (!user) {

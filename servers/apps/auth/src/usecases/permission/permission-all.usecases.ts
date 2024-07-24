@@ -17,9 +17,7 @@ export class PermissionAllUseCases {
     private readonly permissionRepository: PermissionRepositorySQL,
     private readonly userRepository: UserRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
-  ) {
-    console.log('in construct login');
-  }
+  ) {}
   async rateLimiting(ip: string) {
     const allowed = await this.rateLimiter.consume(ip);
     if (allowed) {

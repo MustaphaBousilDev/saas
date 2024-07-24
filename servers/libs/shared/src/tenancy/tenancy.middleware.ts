@@ -8,9 +8,6 @@ export function tenancyMiddleware(
   next: NextFunction,
 ): void {
   const header = req.headers[TENANT_HEADER] as string;
-  console.log('middleeware');
-  console.log('header:', header);
   req.tenantId = header?.toString() || null;
-  console.log('tenantId: ', req.tenantId);
   next();
 }

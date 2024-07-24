@@ -65,7 +65,6 @@ export class PermissionController {
     @Param('permission') permission: string,
     @Request() request: any,
   ) {
-    console.log('permission', permission);
     try {
       const ip = request.ip;
       await this.permissionGet.rateLimiting(ip);
@@ -86,7 +85,6 @@ export class PermissionController {
     const ip = request.ip;
     await this.permissionAll.rateLimiting(ip);
     const permissions = await this.permissionAll.getAllPermissions(filterDto);
-    console.log('all permission', permissions);
 
     return PermissionGetAllOutputDTO.fromPermission(permissions);
   }

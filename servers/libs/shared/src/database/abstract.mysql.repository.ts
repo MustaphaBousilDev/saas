@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { AbstractEntity } from './abstract.entity.mysql';
 import {
+  DataSource,
   DeleteResult,
   EntityManager,
   FindManyOptions,
@@ -176,7 +177,6 @@ export abstract class AbstractRepositorymySQL<T extends AbstractEntity<T>> {
         skip,
         take,
       });
-      console.log('find:', find);
       if (find.length === 0) {
         return null;
       }
@@ -216,12 +216,29 @@ export abstract class AbstractRepositorymySQL<T extends AbstractEntity<T>> {
 
   // Create multiple entities
   async createMany(entities: T[]): Promise<T[]> {
+    const queryRunner = this.entityManager.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
     try {
-      const savedEntities = await this.entityManager.save(entities);
+      // Save each entity within the transaction
+      const savedEntities = [];
+      for (const entity of entities) {
+        const savedEntity = await queryRunner.manager.save(entity);
+        savedEntities.push(savedEntity);
+      }
+
+      // Commit the transaction
+      await queryRunner.commitTransaction();
       return savedEntities;
     } catch (error) {
+      // Rollback the transaction if any error occurs
+      await queryRunner.rollbackTransaction();
       this.logger.error('Error creating entities', error);
       throw new InternalServerErrorException('Error creating entities');
+    } finally {
+      // Release the query runner
+      await queryRunner.release();
     }
   }
 }

@@ -57,7 +57,6 @@ export class PolicyPatchUseCases {
   async verifyPolicyByName(policyName: string): Promise<Policies | any> {
     try {
       const policy = await this.policyRepository.findOne({ policyName });
-      console.log('found', policy);
       if (policy) {
         this.logger.log(
           'Policy Success',
@@ -92,9 +91,7 @@ export class PolicyPatchUseCases {
     policyDTO: PolicyUpdateInputDTO,
   ) {
     try {
-      console.log('i am here');
       const getResource = await this.verifyPolicyByName(policyName);
-      console.log(getResource);
       if (getResource) {
         this.logger.log(
           'Success Find Policy',

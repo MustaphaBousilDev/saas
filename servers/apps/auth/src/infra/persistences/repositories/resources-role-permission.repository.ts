@@ -92,7 +92,7 @@ export class ResourceRolePermessionRepositorySQL extends AbstractRepositorymySQL
 
         return acc;
       }, []);
-      console.log('this is fucking group result', groupedResult);
+
       return groupedResult;
     } catch (error) {
       this.logger.error('Error executing raw SQL query', error);
@@ -114,30 +114,9 @@ export class ResourceRolePermessionRepositorySQL extends AbstractRepositorymySQL
           usr._id = ${userId}
       `;
       const result = await this.entityManager.query(rawQuery);
-      console.log('rt', result);
       return result;
     } catch (error) {
       this.logger.error('Error executing raw SQL query', error);
-      throw new InternalServerErrorException('Error executing raw SQL query');
-    }
-  }
-  async findUserInIAM(userId: number, idTenant: string) {
-    try {
-      const rawQuery = `
-        SELECT 
-          rr.user_id,
-          rr.userCreated_id
-        FROM 
-          ${idTenant}.role_has_resource_permission rr
-        WHERE 
-          rr.user_id = ${3};
-      `;
-      console.log('fucking raw', rawQuery);
-      const result = await this.entityManager.query(rawQuery);
-      console.log('erer', result);
-      return result;
-    } catch (error) {
-      this.logger.error(`'Error executing raw SQL query: ' ${error}`, error);
       throw new InternalServerErrorException('Error executing raw SQL query');
     }
   }

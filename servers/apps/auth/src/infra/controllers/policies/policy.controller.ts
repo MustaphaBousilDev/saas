@@ -112,7 +112,6 @@ export class PolicyController {
     @CurrentUser() user: any,
     @Param('policy') policy: string,
   ) {
-    console.log(policyDTO);
     const ip = request.ip;
     await this.policyPatch.rateLimiting(ip);
     if (policyDTO.policyName) {

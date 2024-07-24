@@ -25,7 +25,6 @@ export class JwtAuthGuard implements CanActivate {
     const jwt =
       context.switchToHttp().getRequest().cookies?.Authentication ||
       context.switchToHttp().getRequest().headers?.Authentication;
-    // console.log('######fucking jwt graphQL', jwt);
     if (!jwt) {
       return false;
     }

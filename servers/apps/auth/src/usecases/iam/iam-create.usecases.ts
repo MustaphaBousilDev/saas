@@ -133,7 +133,6 @@ export class IAMCreateUseCases {
           });
         });
       });
-      console.log('here in final');
       const result = await this.iamRepository.createMany(iamEntities);
       return result;
     } catch (error) {
@@ -150,15 +149,12 @@ export class IAMCreateUseCases {
     idTenant: string,
   ): Promise<UserAuth | UserAuth[] | void> {
     try {
-      console.log('tototo', userId);
       const user = await this.iamRepository.findOneNative(userId, idTenant);
-      console.log('user', user);
       const userIAM = await this.iamRepository.findManyByUserIdsQueryBuilder(
         [userId],
         null,
         ['_id'],
       );
-      console.log('userIAM', userIAM);
       if (userIAM && userIAM.length > 0) {
         this.logger.warn(
           'User Exist in the database',

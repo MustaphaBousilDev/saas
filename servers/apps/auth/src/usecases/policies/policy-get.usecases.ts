@@ -15,9 +15,7 @@ export class PolicyGetUseCases {
     private readonly logger: LoggerService,
     private readonly policyRepository: PolicyRepositorySQL,
     private readonly rateLimiter: RateLimiterService,
-  ) {
-    console.log('in construct login');
-  }
+  ) {}
 
   async rateLimiting(ip: string) {
     const allowed = await this.rateLimiter.consume(ip);
