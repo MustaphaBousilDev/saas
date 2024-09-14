@@ -50,9 +50,12 @@ import {
   IAMPatchUseCases,
   IAMUpdateUseCases,
 } from './iam';
+import { CommandBus, CqrsModule } from '@nestjs/cqrs';
+import { CreateRoleCommandHandler } from './role/CQRS/commands/handlers';
 
 @Module({
   imports: [
+    CqrsModule,
     TenancyModule,
     JwtModule,
     RateLimiterModule,
@@ -104,6 +107,9 @@ import {
     IAMGetUseCases,
     IAMUpdateUseCases,
     IAMPatchUseCases,
+    //
+    CommandBus,
+    CreateRoleCommandHandler,
   ],
   providers: [
     //auth
@@ -145,6 +151,9 @@ import {
     IAMGetUseCases,
     IAMUpdateUseCases,
     IAMPatchUseCases,
+    //command
+    CommandBus,
+    CreateRoleCommandHandler,
   ],
 })
 export class UseCasesModule {}

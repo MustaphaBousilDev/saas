@@ -4,7 +4,7 @@ import { Inject, UseGuards } from '@nestjs/common';
 //import { UsecasesProxyModule } from '../../usecases-proxy/usecases-proxy.module';
 //import { UseCaseProxy } from '../../usecases-proxy/usecases-proxy';
 import { LoginUseCases } from '@app/useCases/auth/login.usecases';
-import { IsAuthenticatedUseCases } from 'apps/auth/src/usecases/isAuthenticated.usecases';
+import { IsAuthenticatedUseCases } from '@app/useCases/isAuthenticated.usecases';
 import { RegisterDTO } from './dto/auth.dto';
 
 @Resolver(() => UserAuth)

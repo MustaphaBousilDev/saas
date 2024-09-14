@@ -12,10 +12,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { RoleCreateInputDTO } from './dtos';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CreateRoleCommand } from './CQRS/commands/implementations';
 
 @Injectable()
 export class RoleCreateUseCases {
   constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
     private readonly logger: LoggerService,
     private readonly roleRepository: RoleRepositorySQL,
     private readonly userRepository: UserRepositorySQL,
@@ -36,7 +40,8 @@ export class RoleCreateUseCases {
   }
 
   async getUser(userId: number): Promise<UserAuth | any> {
-    try {
+    const response = await this.queryBus.execute();
+    /*try {
       const user = await this.userRepository.findOne({ _id: userId });
       if (!user) {
         this.logger.warn(
@@ -51,7 +56,7 @@ export class RoleCreateUseCases {
         `Error occurred while fetching user with ID ${userId}: ${error.message}`,
       );
       throw new NotFoundException('User not found');
-    }
+    }*/
   }
 
   async checkRoleByName(name: string) {
@@ -66,24 +71,16 @@ export class RoleCreateUseCases {
   }
 
   async createRole(roleDTO: RoleCreateInputDTO, userId: number): Promise<Role> {
-    const user = await this.getUser(userId);
-    const role = new Role({
-      ...roleDTO,
-      user: user,
-    });
     try {
-      const newRole = await this.roleRepository.create(role);
-      this.logger.log(
-        'Role created succesfully',
-        `Role '${roleDTO.name}' created successfully with ID: ${newRole._id} in Date: ${newRole.createdAt}`,
+      const user = await this.getUser(userId);
+      console.log('hello', user);
+      const responseCommand = await this.commandBus.execute(
+        new CreateRoleCommand(roleDTO, user),
       );
-      return newRole;
+      return responseCommand;
     } catch (error) {
-      this.logger.error(
-        'Error creating role',
-        `Error occurred while creating role: ${error.message}`,
-      );
-      throw new BadRequestException('Failed to create role');
+      console.log('this is the error', error.message);
+      throw error;
     }
   }
 }

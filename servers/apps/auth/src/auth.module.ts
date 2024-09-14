@@ -21,10 +21,11 @@ import { AuthMiddleware } from './infra/middlewares/login.middleware';
 import { JwtTokenService } from './infra/services/jwt/jwt.service';
 import { RepositoryModule } from './infra/persistences';
 import { BcryptModule } from './infra/services/bcrypt';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CreateRoleCommandHandler } from './usecases/role/CQRS/commands/handlers';
 @Module({
   //JwtModule.registerAsync for configuration JWT
   imports: [
-    //PassportModule,
     DatabaseModulemySQL,
     TenantsModule,
     RepositoryModule,
