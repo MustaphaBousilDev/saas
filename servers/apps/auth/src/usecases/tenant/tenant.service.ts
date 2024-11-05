@@ -16,7 +16,7 @@ export class TenantsService {
   async create(createTenantDto: CreateTenantDto) {
     //console.log('########### service tanent');
     let tenant = new Tenant({
-      name: createTenantDto.name,
+      ...createTenantDto,
     });
 
     tenant = await this.tenantsRepository.create(tenant);

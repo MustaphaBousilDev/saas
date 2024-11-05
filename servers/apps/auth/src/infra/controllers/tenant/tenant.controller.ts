@@ -9,6 +9,7 @@ export class TenantsController {
 
   @Post()
   create(@Body() createTenantDto: CreateTenantDto): Promise<Tenant> {
+    console.log(createTenantDto);
     return this.tenantsService.create(createTenantDto);
   }
 
