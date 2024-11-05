@@ -22,6 +22,7 @@ import {
   PasswordPolicy,
   PasswordResetToken,
   Policies,
+  SubscriptionTenant,
   Tenant,
 } from '../entities';
 import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
@@ -50,6 +51,7 @@ import { TenantRepositorySQL } from './tenant.repository';
       PasswordPolicy,
       Role_Has_Resource_Permission,
       AccountLockOut,
+      SubscriptionTenant,
     ]),
     TenancyModule,
   ],

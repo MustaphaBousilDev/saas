@@ -14,3 +14,4 @@ export * from './role_has_resource_permission';
 export * from './user-details.entity';
 export * from './user.entity';
 export * from './tenant.entity';
+export * from './subscription-entity';
