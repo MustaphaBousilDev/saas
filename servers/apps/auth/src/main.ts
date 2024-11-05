@@ -57,14 +57,10 @@ async function bootstrap() {
     },
   });*/
   app.use(cookieParser());
-  //Filter
   app.useGlobalFilters(new AllExceptionFilter(new LoggerService()));
-  //Pipe
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  //Interceptor
   app.useGlobalInterceptors(new LogginInterceptor(new LoggerService()));
   app.useGlobalInterceptors(new ResponseInterceptor());
-  // Use the Logger provided by the Nest application
   app.useLogger(app.get(Logger));
   //await app.startAllMicroservices();
   await app.listen(configService.get('HTTP_PORT_AUTH'));

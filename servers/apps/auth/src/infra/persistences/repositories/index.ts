@@ -7,3 +7,4 @@ export * from './user.repository';
 export * from './users-details.repository';
 export * from './users.repository';
 export * from './policy.repository';
+export * from './tenant.repository';

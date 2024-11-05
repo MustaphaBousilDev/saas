@@ -9,6 +9,7 @@ import { UserController } from './user';
 import { ResourceController } from './resources';
 import { PolicyController } from './policies';
 import { IAMController } from './iam/iam.controller';
+import { TenantsController } from './tenant';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { IAMController } from './iam/iam.controller';
     ResourceController,
     PolicyController,
     IAMController,
+    TenantsController,
   ],
   providers: [],
   exports: [],

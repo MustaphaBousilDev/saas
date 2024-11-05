@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { CreateTenantDto } from './tenant.dto';
-import { Tenant } from './tenant.entity';
-import { TenantsService } from './tenant.service';
+import { CreateTenantDto } from '../../../usecases/tenant/tenant.dto';
+import { Tenant } from '../../persistences/entities/tenant.entity';
+import { TenantsService } from '../../../usecases/tenant/tenant.service';
 
 @Controller('tenants')
 export class TenantsController {

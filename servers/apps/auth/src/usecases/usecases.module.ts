@@ -50,6 +50,7 @@ import {
   IAMPatchUseCases,
   IAMUpdateUseCases,
 } from './iam';
+import { TenantsService } from './tenant';
 
 @Module({
   imports: [
@@ -104,6 +105,8 @@ import {
     IAMGetUseCases,
     IAMUpdateUseCases,
     IAMPatchUseCases,
+    //tenancy
+    TenantsService,
   ],
   providers: [
     //auth
@@ -145,6 +148,8 @@ import {
     IAMGetUseCases,
     IAMUpdateUseCases,
     IAMPatchUseCases,
+    //tenancy
+    TenantsService,
   ],
 })
 export class UseCasesModule {}

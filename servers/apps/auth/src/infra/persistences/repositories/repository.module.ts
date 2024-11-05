@@ -22,9 +22,11 @@ import {
   PasswordPolicy,
   PasswordResetToken,
   Policies,
+  Tenant,
 } from '../entities';
 import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
 import { PolicyRepositorySQL } from './policy.repository';
+import { TenantRepositorySQL } from './tenant.repository';
 
 @Module({
   imports: [
@@ -43,6 +45,7 @@ import { PolicyRepositorySQL } from './policy.repository';
       UserDetailAuth,
       LoginAttempts,
       Policies,
+      Tenant,
       Resource,
       PasswordPolicy,
       Role_Has_Resource_Permission,
@@ -59,6 +62,7 @@ import { PolicyRepositorySQL } from './policy.repository';
     ResourceRepositorySQL,
     ResourceRolePermessionRepositorySQL,
     PolicyRepositorySQL,
+    TenantRepositorySQL,
     //LocalStrategy,
   ],
   exports: [
@@ -70,6 +74,7 @@ import { PolicyRepositorySQL } from './policy.repository';
     ResourceRepositorySQL,
     ResourceRolePermessionRepositorySQL,
     PolicyRepositorySQL,
+    TenantRepositorySQL,
   ],
 })
 export class RepositoryModule {}

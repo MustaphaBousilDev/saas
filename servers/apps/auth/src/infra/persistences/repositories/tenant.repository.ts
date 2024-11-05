@@ -2,7 +2,7 @@ import { AbstractRepositorymySQL } from '@app/shared';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { Tenant } from './tenant.entity';
+import { Tenant } from '../entities/tenant.entity';
 
 @Injectable()
 export class TenantRepositorySQL extends AbstractRepositorymySQL<Tenant> {

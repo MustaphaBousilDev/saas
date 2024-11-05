@@ -15,7 +15,6 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriverConfig, ApolloFederationDriver } from '@nestjs/apollo';
 import { ControllerModule } from './infra/controllers';
 import { UseCasesModule } from './usecases/usecases.module';
-import { TenantsModule } from '@app/shared/tenancy/tenant/tenant.module';
 import { TenancyModule } from '@app/shared/tenancy/tenancy.module';
 import { AuthMiddleware } from './infra/middlewares/login.middleware';
 import { JwtTokenService } from './infra/services/jwt/jwt.service';
@@ -24,9 +23,7 @@ import { BcryptModule } from './infra/services/bcrypt';
 @Module({
   //JwtModule.registerAsync for configuration JWT
   imports: [
-    //PassportModule,
     DatabaseModulemySQL,
-    TenantsModule,
     RepositoryModule,
     TenancyModule,
     ControllerModule,

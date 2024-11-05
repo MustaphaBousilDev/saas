@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { getTenantConnection } from '../../tenancy/tenancy.utils';
-import { Tenant } from './tenant.entity';
+import { getTenantConnection } from '@app/shared/tenancy/tenancy.utils';
+import { Tenant } from '../../infra/persistences/entities/tenant.entity';
 import { CreateTenantDto } from './tenant.dto';
-import { TenantRepositorySQL } from './tenant.repository';
+import { TenantRepositorySQL } from '../../infra/persistences/repositories/tenant.repository';
 import { createDataSource } from '@app/shared/database/database.providers';
 import { ConfigService } from '@nestjs/config';
 
