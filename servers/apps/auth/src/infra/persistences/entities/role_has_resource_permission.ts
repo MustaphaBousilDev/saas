@@ -7,9 +7,6 @@ import { Resource } from './resources.entity';
 
 @Entity()
 export class Role_Has_Resource_Permission extends AbstractEntity<Role_Has_Resource_Permission> {
-  /*@Column({ type: 'varchar' })
-  name: string;*/
-
   @Column({ type: 'text' })
   description: string;
 
@@ -19,10 +16,10 @@ export class Role_Has_Resource_Permission extends AbstractEntity<Role_Has_Resour
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: null })
+  @Column({ type: 'timestamp', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @Column({ type: 'timestamp', default: null })
+  @Column({ type: 'timestamp', nullable: true })
   deletedAt: Date;
 
   @ManyToOne(() => UserAuth, (user) => user.resource, {

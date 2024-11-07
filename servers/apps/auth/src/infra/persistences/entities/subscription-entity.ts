@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { Tenant } from './tenant.entity';
 import { AbstractEntity } from '@app/shared';
 
@@ -24,13 +24,13 @@ export class SubscriptionTenant extends AbstractEntity<SubscriptionTenant> {
   })
   status: StatusSubscription;
 
-  @OneToOne(() => Tenant)
-  @JoinTable()
+  @OneToOne(() => Tenant, { onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+  @JoinColumn() // Use @JoinColumn() without @JoinTable() for one-to-one relationships
   tenant: Tenant;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 }

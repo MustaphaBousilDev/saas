@@ -8,14 +8,14 @@ export class RefreshToken extends AbstractEntity<RefreshToken> {
   refreshToken: string;
 
   @Column({ type: 'timestamp' })
-  expiry: any;
+  expiry: Date;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: true })
   isActivate: boolean;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
   lastUsedAt: Date;
 }

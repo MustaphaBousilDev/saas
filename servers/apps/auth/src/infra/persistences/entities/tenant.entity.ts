@@ -1,5 +1,5 @@
 import { AbstractEntity } from '@app/shared/database';
-import { Column, Entity, JoinTable, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, JoinTable, OneToOne } from 'typeorm';
 import { UserAuth } from './user.entity';
 
 @Entity()
@@ -21,7 +21,7 @@ export class Tenant extends AbstractEntity<Tenant> {
   domain: string;
 
   @OneToOne(() => UserAuth, { nullable: true })
-  @JoinTable()
+  @JoinColumn()
   user?: UserAuth;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

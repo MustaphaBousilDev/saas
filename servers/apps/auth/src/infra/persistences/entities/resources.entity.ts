@@ -12,19 +12,19 @@ export class Resource extends AbstractEntity<Resource> {
   @Column({ type: 'boolean', default: true })
   status: boolean;
 
-  @Column({ type: 'varchar', default: null })
+  @Column({ type: 'varchar', nullable: true })
   url: string;
 
-  @Column({ type: 'text', default: null })
+  @Column({ type: 'text', nullable: null })
   description: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', default: null })
+  @Column({ type: 'timestamp', nullable: null, onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @Column({ type: 'timestamp', default: null })
+  @Column({ type: 'timestamp', nullable: null })
   deletedAt: Date;
 
   @ManyToOne(() => UserAuth, (user) => user.resource, {
