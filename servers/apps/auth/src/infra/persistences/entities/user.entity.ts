@@ -75,7 +75,7 @@ export class UserAuth extends AbstractEntity<UserAuth> {
   })
   resetPasswordToken?: PasswordResetToken[];
 
-  @OneToMany(() => Policies, (policy) => policy.user, {
+  @OneToMany(() => Policies, (policy) => policy.createdBy, {
     cascade: true,
     eager: true,
     nullable: true,

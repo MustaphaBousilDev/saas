@@ -15,3 +15,4 @@ export * from './user-details.entity';
 export * from './user.entity';
 export * from './tenant.entity';
 export * from './subscription-entity';
+export * from './free-tier.entity';

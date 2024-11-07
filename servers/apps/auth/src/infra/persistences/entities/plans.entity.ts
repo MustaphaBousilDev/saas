@@ -25,12 +25,6 @@ export class Plans extends AbstractEntity<Plans> {
   })
   limits: Record<string, any>;
 
-  @Column({
-    default: null,
-    type: 'int',
-  })
-  freetier_days: number;
-
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
