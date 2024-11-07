@@ -1,6 +1,5 @@
 import { AbstractEntity } from '@app/shared';
-import { Column, Entity, ManyToOne } from 'typeorm';
-import { UserAuth } from './user.entity';
+import { Column, Entity } from 'typeorm';
 
 @Entity()
 export class LoginAttempts extends AbstractEntity<LoginAttempts> {
@@ -16,11 +15,11 @@ export class LoginAttempts extends AbstractEntity<LoginAttempts> {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @ManyToOne(() => UserAuth, (user) => user.loginAttempt, {
+  /*@ManyToOne(() => UserAuth, (user) => user.loginAttempt, {
     nullable: true,
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  user: UserAuth;
+  user: UserAuth;*/
 }

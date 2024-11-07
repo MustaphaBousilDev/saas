@@ -32,4 +32,9 @@ export class Tenant extends AbstractEntity<Tenant> {
 
   @Column({ type: 'timestamp', nullable: true })
   deletedAt: Date;
+
+  @Column({
+    default: true,
+  })
+  active: boolean;
 }

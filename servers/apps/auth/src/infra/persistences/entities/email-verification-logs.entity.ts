@@ -19,13 +19,13 @@ export class VerificationEmailLogs extends AbstractEntity<VerificationEmailLogs>
   })
   status: VerifyEmailStatus;
 
-  @OneToOne(() => UserAuth)
+  @OneToOne(() => UserAuth, { onDelete: 'CASCADE' })
   @JoinColumn()
   user: UserAuth;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 }

@@ -23,7 +23,6 @@ export class Permission extends AbstractEntity<Permission> {
 
   @ManyToOne(() => UserAuth, (user) => user.permission, {
     nullable: true,
-    orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

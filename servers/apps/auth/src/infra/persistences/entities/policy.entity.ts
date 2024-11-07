@@ -38,7 +38,7 @@ export class Policies extends AbstractEntity<Policies> {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
   @Column({ type: 'timestamp', nullable: true })
@@ -50,5 +50,5 @@ export class Policies extends AbstractEntity<Policies> {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  user: UserAuth;
+  createdBy: UserAuth;
 }

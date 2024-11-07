@@ -7,24 +7,23 @@ export class PasswordPolicy extends AbstractEntity<PasswordPolicy> {
   @Column({ default: 8 })
   minLength: number;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: false })
   RequireUppercase: boolean;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: false })
   RequireLowercase: boolean;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: false })
   RequireDigits: boolean;
 
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: false })
   RequireSpecialCharacter: boolean;
 
-  @Column()
+  @Column({ type: 'int', default: 90 })
   ExpiryDate: number;
 
   @ManyToOne(() => UserAuth, (user) => user.passwordPolicy, {
     nullable: true,
-    orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

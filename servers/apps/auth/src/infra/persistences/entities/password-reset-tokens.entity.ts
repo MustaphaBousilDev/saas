@@ -11,12 +11,11 @@ export class PasswordResetToken extends AbstractEntity<PasswordResetToken> {
   @Column({ type: 'timestamp' })
   expiryTime: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
-  cretatedAt: Date;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
 
   @ManyToOne(() => UserAuth, (user) => user.resetPasswordToken, {
     nullable: true,
-    orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

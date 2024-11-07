@@ -11,7 +11,6 @@ import {
 } from 'typeorm';
 import { UserDetailAuth } from './user-details.entity';
 import { AccountLockOut } from './account-lockout.entity';
-import { LoginAttempts } from './login-attempts.entity';
 import { PasswordHistory } from './password-history.entity';
 import { PasswordResetToken } from './password-reset-tokens.entity';
 import { Role } from './role.entity';
@@ -50,13 +49,6 @@ export class UserAuth extends AbstractEntity<UserAuth> {
     nullable: true,
   })
   accountLockOut?: AccountLockOut[];
-
-  @OneToMany(() => LoginAttempts, (loginAttempt) => loginAttempt.user, {
-    cascade: true,
-    eager: true,
-    nullable: true,
-  })
-  loginAttempt?: LoginAttempts[];
 
   @OneToMany(
     () => FailedLoginAttempts,

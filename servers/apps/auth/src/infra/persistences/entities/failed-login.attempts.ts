@@ -7,11 +7,11 @@ export class FailedLoginAttempts extends AbstractEntity<FailedLoginAttempts> {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   AttemptDatetime: Date;
 
-  @Column({ type: 'int' })
-  count: number;
+  @Column({ type: 'int', default: 1 })
+  attemptCount: number;
 
-  @ManyToOne(() => UserAuth, (user) => user.loginAttempt, {
-    nullable: true,
+  @ManyToOne(() => UserAuth, (user) => user.failedLoginAttempt, {
+    nullable: false,
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

@@ -5,7 +5,7 @@ import { UserAuth } from './user.entity';
 @Entity()
 export class PasswordHistory extends AbstractEntity<PasswordHistory> {
   @Index()
-  @Column('varchar', { unique: true })
+  @Column('varchar')
   passwordHash: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -13,7 +13,6 @@ export class PasswordHistory extends AbstractEntity<PasswordHistory> {
 
   @ManyToOne(() => UserAuth, (user) => user.passwordHistory, {
     nullable: true,
-    orphanedRowAction: 'delete',
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })

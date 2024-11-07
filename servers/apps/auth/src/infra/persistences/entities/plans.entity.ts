@@ -2,43 +2,39 @@ import { AbstractEntity } from '@app/shared';
 import { Column, Entity, Index, ManyToOne } from 'typeorm';
 import { UserAuth } from './user.entity';
 
-export enum PolicyCategory {
-  TASKS = 'tasks',
-  ORGANIZATION = 'organization',
-  BOOKING = 'booking',
-  STOCK = 'stock',
-  IAM = 'iam',
-  EMPLOYEE = 'employee',
-  GLOBAL = 'global',
-  // Add other categories as needed
-}
-
 @Entity()
 export class Plans extends AbstractEntity<Plans> {
-  @Index({ unique: true })
-  @Column({ type: 'varchar', unique: true })
-  policyName: string;
-
   @Column({
-    type: 'enum',
-    enum: PolicyCategory,
-    default: PolicyCategory.GLOBAL,
+    default: 0,
+    scale: 2,
+    precision: 10,
+    type: 'decimal',
   })
-  category: PolicyCategory;
-
-  @Column({ type: 'text' })
-  description: string;
+  price: number;
 
   @Column({ type: 'boolean', default: true })
-  status: boolean;
+  @Index()
+  isActive: boolean;
 
-  @Column({ type: 'json' })
-  policyDocument: JSON;
+  @Column({ type: 'jsonb', nullable: true })
+  features: Record<string, any>;
+
+  @Column({
+    type: 'jsonb',
+    nullable: true,
+  })
+  limits: Record<string, any>;
+
+  @Column({
+    default: null,
+    type: 'int',
+  })
+  freetier_days: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
   @Column({ type: 'timestamp', nullable: true })
@@ -50,5 +46,5 @@ export class Plans extends AbstractEntity<Plans> {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
-  user: UserAuth;
+  createdBy: UserAuth;
 }

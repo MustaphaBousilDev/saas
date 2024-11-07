@@ -9,13 +9,13 @@ export class AccountLockOut extends AbstractEntity<AccountLockOut> {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   lockOutDatetime: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', nullable: true })
   unlockDatetime: Date;
 
-  @Column({ type: 'varchar' })
-  reason: string;
+  @Column({ type: 'varchar', length: 255 })
+  lockoutReason: string;
 
-  @Column()
+  @Column({ select: false }) //select: false is for exclude from select queries by default
   @Field()
   // i dont want to add Field into password , because password is sensitive data
   password: string;
