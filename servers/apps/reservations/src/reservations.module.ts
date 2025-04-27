@@ -49,7 +49,6 @@ import { UserRepositorySQL as UserRemoteRepository } from './resources/users.rep
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        MONGODB_URI: Joi.string().required(),
         HTTP_PORT_RESERVATION: Joi.number().required(),
         AUTH_HOST: Joi.string().required(),
         AUTH_PORT: Joi.number().required(),
